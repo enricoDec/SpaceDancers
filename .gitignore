@@ -348,3 +348,6 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+.Dependencies\SFML-2.5.1\doc
+/Dependencies/SFML-2.5.1/doc/html
