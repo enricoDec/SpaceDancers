@@ -10,6 +10,7 @@
 
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "GameManager.h"
 
 class Application {
 public:
@@ -19,5 +20,6 @@ public:
 	void initGame();
 	void startGame();
 private:
-	sf::RenderWindow gameWindow;
+	sf::RenderWindow* gameWindow;
+	GameManager gameManager;
 };
