@@ -10,7 +10,7 @@
 
 #include "GameManager.h"
 
-GameManager::GameManager():fixedDeltaTime(0.0f) {
+GameManager::GameManager():fixedDeltaTime(0.0f), borderOffset(50), invadersPerRow(10), rowsOfInvaders(3) {
 	this->gameState = GAME_STATE_MENU;
 	//Play Button etc... init
 }
@@ -25,7 +25,7 @@ GameManager::~GameManager() {
 void GameManager::startGame() {
 }
 
-void GameManager::update() {
+void GameManager::update(sf::RenderWindow* gameWindow) {
 	
 	float deltaTime = clock.restart().asSeconds();
 	fixedDeltaTime += deltaTime;
@@ -35,13 +35,13 @@ void GameManager::update() {
 	// && click on menu
 	if (this->gameState == GAME_STATE_MENU)
 	{
-		initInvaders(10);
+		initInvaders(invadersPerRow, rowsOfInvaders);
 		this->gameState = GAME_STATE_RUNNING;
 	}
 	if (this->gameState == GAME_STATE_RUNNING) {
 		for (int i = 0; i < invaderList.size(); i++)
 		{
-			invaderList.at(i)->move(deltaTime);
+			invaderList.at(i)->move(deltaTime, gameWindow, invaderList, borderOffset);
 
 			// Sprite Animation 2 times a sec
 			if (fixedDeltaTime > 1 / 2.0f)
@@ -55,18 +55,23 @@ void GameManager::update() {
 	}
 }
 
-void GameManager::initInvaders(int invaderAmount) {
-	for (int i = 0; i < invaderAmount; i++)
-	{
-		Invader* invader = new Invader(this->spritePath);
-		invader->setPosition(sf::Vector2f(i * 50, 100));
-		invaderList.push_back(invader);
+void GameManager::initInvaders(int invaderAmountPerRow, int rowsOfInvaders) {
+	int rowY = 50;
+
+	for (int j = 0; j < rowsOfInvaders; j++) {
+		for (int i = 0; i < invaderAmountPerRow; i++)
+		{
+			Invader* invader = new Invader(this->spritePath, j);
+			invader->setPosition(sf::Vector2f((i * 50) + borderOffset, rowY));
+			invaderList.push_back(invader);
+		}
+		rowY += 40;
 	}
 }
 
-void GameManager::render(sf::RenderWindow* renderWindow) {
+void GameManager::render(sf::RenderWindow* gameWindow) {
 	for (int i = 0; i < invaderList.size(); i++)
 	{
-		invaderList.at(i)->draw(renderWindow);
+		invaderList.at(i)->draw(gameWindow);
 	}
 }

@@ -23,14 +23,17 @@ public:
 	GameManager();
 	~GameManager();
 	void startGame();
-	void update();
-	void render(sf::RenderWindow* renderWindow);
+	void update(sf::RenderWindow* gameWindow);
+	void render(sf::RenderWindow* gameWindow);
 
 private:
-	void initInvaders(int invaderAmount);
+	void initInvaders(int invaderAmount, int rowsOfInvaders);
 	int topScore;
 	int gameState;
 	int level;
+	int borderOffset;
+	int invadersPerRow;
+	int rowsOfInvaders;
 	const char* spritePath = "C:\\Users\\Enrico\\Desktop\\SpaceDancers\\SpaceDancers\\bin\\Debug\\x64\\res\\InvadersSheet.png";
 	std::vector<Invader*> invaderList;
 	sf::Clock clock;

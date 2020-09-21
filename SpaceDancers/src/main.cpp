@@ -13,7 +13,7 @@
 
 int main()
 {
-    Application* app = new Application(600, 500, false);
+    Application* app = new Application(800, 500, false);
     app->initGame();
     app->startGame();
 

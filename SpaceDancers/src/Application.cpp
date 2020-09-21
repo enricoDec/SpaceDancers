@@ -41,7 +41,7 @@ void Application::startGame() {
                 gameWindow->setView(sf::View(sf::Vector2f(event.size.width / 2, event.size.height / 2), sf::Vector2f(event.size.width, event.size.height)));
             }
         }
-        this->gameManager.update();
+        this->gameManager.update(this->gameWindow);
 
         this->gameWindow->clear();
         this->gameManager.render(this->gameWindow);
