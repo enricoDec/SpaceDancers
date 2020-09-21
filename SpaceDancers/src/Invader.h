@@ -17,13 +17,15 @@ public:
 	Invader(const char* spritePath);
 	~Invader();
 
-	void move();
+	void move(float deltaTime);
 	void shoot();
 	void draw(sf::RenderWindow* gameWindow);
 	void setPosition(sf::Vector2f position);
+	void spriteAnimation();
 
 private:
 	int speed;
+	int animationState;
 	sf::Sprite invaderSprite;
 	sf::Texture invaderTexture;
 };

@@ -31,6 +31,8 @@ private:
 	int topScore;
 	int gameState;
 	int level;
-	const char* spritePath = "S:\\code\\HTW\\Computergrafik\\SpaceDancer\\SpaceDancers\\bin\\Debug\\x64\\res\\Invader.PNG";
+	const char* spritePath = "C:\\Users\\Enrico\\Desktop\\SpaceDancers\\SpaceDancers\\bin\\Debug\\x64\\res\\InvadersSheet.png";
 	std::vector<Invader*> invaderList;
+	sf::Clock clock;
+	float fixedDeltaTime;
 };

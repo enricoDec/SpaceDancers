@@ -36,6 +36,9 @@
       </SubType>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="bin\Debug\x64\res\InvadersSheet.png" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

@@ -10,9 +10,8 @@
 
 #include "GameManager.h"
 
-GameManager::GameManager() {
+GameManager::GameManager():fixedDeltaTime(0.0f) {
 	this->gameState = GAME_STATE_MENU;
-
 	//Play Button etc... init
 }
 
@@ -27,6 +26,12 @@ void GameManager::startGame() {
 }
 
 void GameManager::update() {
+	
+	float deltaTime = clock.restart().asSeconds();
+	fixedDeltaTime += deltaTime;
+
+
+
 	// && click on menu
 	if (this->gameState == GAME_STATE_MENU)
 	{
@@ -36,7 +41,16 @@ void GameManager::update() {
 	if (this->gameState == GAME_STATE_RUNNING) {
 		for (int i = 0; i < invaderList.size(); i++)
 		{
-			invaderList.at(i)->move();
+			invaderList.at(i)->move(deltaTime);
+
+			// Sprite Animation 2 times a sec
+			if (fixedDeltaTime > 1 / 2.0f)
+			{
+				invaderList.at(i)->spriteAnimation();
+			}
+		}
+		if (fixedDeltaTime > 1 / 2.0f) {
+			fixedDeltaTime -= 1 / 5.0f;
 		}
 	}
 }

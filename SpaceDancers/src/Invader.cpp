@@ -10,10 +10,12 @@
 
 #include "Invader.h"
 
-Invader::Invader(const char* spritePath) {
+Invader::Invader(const char* spritePath):animationState(0) {
 	this->invaderTexture = sf::Texture();
 	this->invaderTexture.loadFromFile(spritePath);
 	this->invaderSprite = sf::Sprite(this->invaderTexture);
+	this->invaderSprite.setTextureRect(sf::IntRect(0, 0, 11, 8));
+	this->invaderSprite.setScale(sf::Vector2f(3.0f,3.0f));
 }
 
 Invader::~Invader() {
@@ -24,8 +26,8 @@ void Invader::shoot() {
 
 }
 
-void Invader::move() {
-	this->invaderSprite.setPosition(sf::Vector2f(this->invaderSprite.getPosition().x + 0.1, this->invaderSprite.getPosition().y));
+void Invader::move(float deltaTime) { 
+	this->invaderSprite.setPosition(sf::Vector2f(this->invaderSprite.getPosition().x + 15 * deltaTime, this->invaderSprite.getPosition().y));
 }
 
 void Invader::draw(sf::RenderWindow* gameWindow) {
@@ -33,4 +35,10 @@ void Invader::draw(sf::RenderWindow* gameWindow) {
 }
 
 void Invader::setPosition(sf::Vector2f position) {
-	invaderSprite.setPosition(position);
+	this->invaderSprite.setPosition(position);
+}
+
+void Invader::spriteAnimation(){
+	this->animationState = !this->animationState;
+	this->invaderSprite.setTextureRect(sf::IntRect(11 * animationState, 0, 11, 8));
+}
