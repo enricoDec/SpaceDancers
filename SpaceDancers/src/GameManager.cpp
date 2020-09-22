@@ -71,7 +71,7 @@ void GameManager::initInvaders(int invaderAmountPerRow, int rowsOfInvaders) {
 	for (int j = 0; j < rowsOfInvaders; j++) {
 		for (int i = 0; i < invaderAmountPerRow; i++)
 		{
-			Invader* invader = new Invader(this->spritePath, j);
+			Invader* invader = new Invader(this->spritePath, j, (int)(MAX_INVADER_TYPES / (float)rowsOfInvaders * j));
 			invader->setPosition(sf::Vector2f((i * 50) + borderOffset, rowY));
 			invaderList.push_back(invader);
 		}

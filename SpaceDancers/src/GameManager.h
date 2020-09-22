@@ -20,6 +20,8 @@
 #define GAME_STATE_RUNNING	 3
 #define GAME_STATE_GAME_OVER 4
 
+#define MAX_INVADER_TYPES 3
+
 class GameManager
 {
 public:

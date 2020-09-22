@@ -14,7 +14,7 @@
 class Invader
 {
 public:
-	Invader(const char* spritePath, int rowNumber);
+	Invader(const char* spritePath, int rowNumber, int invaderType);
 	~Invader();
 
 	void move(float deltaTime, sf::RenderWindow* gameWindow, std::vector<Invader*> invaderList, int borderOffset);
@@ -28,6 +28,7 @@ private:
 	int rowHeigth;
 	int rowNumber;
 	int animationState;
+	int invaderType;
 	sf::Sprite invaderSprite;
 	sf::Texture invaderTexture;
 

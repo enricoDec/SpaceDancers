@@ -11,13 +11,14 @@
 #include "Invader.h"
 #include <iostream>
 
-Invader::Invader(const char* spritePath, int rowNumber) :animationState(0), speed(60), rowHeigth(20) {
+Invader::Invader(const char* spritePath, int rowNumber, int invaderType) :animationState(0), speed(60), rowHeigth(20) {
 
 	this->rowNumber = rowNumber;
+	this->invaderType = invaderType;
 	this->invaderTexture = sf::Texture();
 	this->invaderTexture.loadFromFile(spritePath);
 	this->invaderSprite = sf::Sprite(this->invaderTexture);
-	this->invaderSprite.setTextureRect(sf::IntRect(0, 0, 11, 8));
+	this->invaderSprite.setTextureRect(sf::IntRect(invaderType * 20, 0, 10, 8));
 	this->invaderSprite.setScale(sf::Vector2f(3.0f, 3.0f));
 	this->invaderSprite.setOrigin(sf::Vector2f(this->invaderSprite.getLocalBounds().width / 2, this->invaderSprite.getLocalBounds().height / 2));
 }
@@ -76,5 +77,5 @@ void Invader::setPosition(sf::Vector2f position) {
 
 void Invader::spriteAnimation() {
 	this->animationState = !this->animationState;
-	this->invaderSprite.setTextureRect(sf::IntRect(11 * animationState, 0, 11, 8));
+	this->invaderSprite.setTextureRect(sf::IntRect(10 * animationState + invaderType * 20, 0, 10, 8));
 }
