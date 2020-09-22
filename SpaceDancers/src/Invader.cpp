@@ -34,6 +34,8 @@ void Invader::move(float deltaTime, sf::RenderWindow* gameWindow, std::vector<In
 	//std::cout << "(" << this->invaderSprite.getPosition().x << ")" << "(" << this->invaderSprite.getPosition().y << ")" << std::endl;
 	//std::cout << deltaTime << std::endl;
 
+	// TODO: swap offset with this->invaderSprite.getGlobalBounds().width
+
 	if ((this->invaderSprite.getPosition().x + borderOffset >= gameWindow->getSize().x) 
 		|| (this->invaderSprite.getPosition().x - borderOffset <= 0))
 	{

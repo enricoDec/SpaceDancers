@@ -11,16 +11,19 @@
 #pragma once
 #include <vector>
 #include "Invader.h"
+#include "Menu.h"
+#include "InputHandler.h"
 
 #define GAME_STATE_MENU		 0
-#define GAME_STATE_PAUSE	 1
-#define GAME_STATE_RUNNING	 2
-#define GAME_STATE_GAME_OVER 3
+#define GAME_STATE_INIT		 1
+#define GAME_STATE_PAUSE	 2
+#define GAME_STATE_RUNNING	 3
+#define GAME_STATE_GAME_OVER 4
 
 class GameManager
 {
 public:
-	GameManager();
+	GameManager(sf::RenderWindow* gameWindow);
 	~GameManager();
 	void startGame();
 	void update(sf::RenderWindow* gameWindow);
@@ -38,4 +41,5 @@ private:
 	std::vector<Invader*> invaderList;
 	sf::Clock clock;
 	float fixedDeltaTime;
+	Menu* menu;
 };

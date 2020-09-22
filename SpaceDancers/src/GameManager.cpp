@@ -10,9 +10,11 @@
 
 #include "GameManager.h"
 
-GameManager::GameManager():fixedDeltaTime(0.0f), borderOffset(50), invadersPerRow(10), rowsOfInvaders(3) {
+GameManager::GameManager(sf::RenderWindow* gameWindow):fixedDeltaTime(0.0f), borderOffset(50), 
+invadersPerRow(10), rowsOfInvaders(3), level(0), topScore(0) {
 	this->gameState = GAME_STATE_MENU;
-	//Play Button etc... init
+
+	menu = new Menu(gameWindow->getSize().x, gameWindow->getSize().y);
 }
 
 GameManager::~GameManager() {
@@ -30,14 +32,21 @@ void GameManager::update(sf::RenderWindow* gameWindow) {
 	float deltaTime = clock.restart().asSeconds();
 	fixedDeltaTime += deltaTime;
 
-
-
-	// && click on menu
 	if (this->gameState == GAME_STATE_MENU)
+	{
+		menu->update(gameWindow);
+		if (menu->startGame == true)
+		{
+			this->gameState = GAME_STATE_INIT;
+		}
+	}
+
+	if (this->gameState == GAME_STATE_INIT)
 	{
 		initInvaders(invadersPerRow, rowsOfInvaders);
 		this->gameState = GAME_STATE_RUNNING;
 	}
+
 	if (this->gameState == GAME_STATE_RUNNING) {
 		for (int i = 0; i < invaderList.size(); i++)
 		{
@@ -70,8 +79,16 @@ void GameManager::initInvaders(int invaderAmountPerRow, int rowsOfInvaders) {
 }
 
 void GameManager::render(sf::RenderWindow* gameWindow) {
-	for (int i = 0; i < invaderList.size(); i++)
+	switch (gameState)
 	{
-		invaderList.at(i)->draw(gameWindow);
+	case GAME_STATE_MENU:
+		menu->draw(gameWindow);
+		break;
+	case GAME_STATE_RUNNING:
+		for (int i = 0; i < invaderList.size(); i++)
+		{
+			invaderList.at(i)->draw(gameWindow);
+		}
+		break;
 	}
 }

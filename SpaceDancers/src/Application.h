@@ -11,6 +11,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "GameManager.h"
+#include "InputHandler.h"
 
 class Application {
 public:
@@ -21,5 +22,5 @@ public:
 	void startGame();
 private:
 	sf::RenderWindow* gameWindow;
-	GameManager gameManager;
+	GameManager* gameManager;
 };
