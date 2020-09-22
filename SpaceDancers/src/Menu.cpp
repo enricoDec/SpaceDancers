@@ -22,6 +22,7 @@ Menu::Menu(float width, float height) :selectedItemIndex(0), startGame(false) {
 	//menu background
 	this->background.loadFromFile("C:\\Users\\Enrico\\Desktop\\SpaceDancers\\SpaceDancers\\bin\\Debug\\x64\\res\\background.jpg");
 	this->backgroundSprite = sf::Sprite(this->background);
+	this->backgroundSprite.setScale(sf::Vector2f(width / background.getSize().x, height / background.getSize().y));
 
 	//Help Text
 	helpText.setFont(font);

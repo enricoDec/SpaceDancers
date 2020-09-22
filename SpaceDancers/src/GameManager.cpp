@@ -11,7 +11,7 @@
 #include "GameManager.h"
 
 GameManager::GameManager(sf::RenderWindow* gameWindow):fixedDeltaTime(0.0f), borderOffset(50), 
-invadersPerRow(10), rowsOfInvaders(3), level(0), topScore(0) {
+invadersPerRow(12), rowsOfInvaders(3), level(0), topScore(0) {
 	this->gameState = GAME_STATE_MENU;
 
 	menu = new Menu(gameWindow->getSize().x, gameWindow->getSize().y);
@@ -50,6 +50,7 @@ void GameManager::update(sf::RenderWindow* gameWindow) {
 	if (this->gameState == GAME_STATE_RUNNING) {
 		for (int i = 0; i < invaderList.size(); i++)
 		{
+			// move entire row at once
 			invaderList.at(i)->move(deltaTime, gameWindow, invaderList, borderOffset);
 
 			// Sprite Animation 2 times a sec
