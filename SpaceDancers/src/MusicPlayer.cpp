@@ -10,10 +10,9 @@
 
 #include "MusicPlayer.h"
 
-MusicPlayer::MusicPlayer(bool loop)
+MusicPlayer::MusicPlayer()
 {
 	this->music = new sf::Music();
-	this->music->setLoop(loop);
 }
 
 MusicPlayer::~MusicPlayer()
@@ -21,13 +20,14 @@ MusicPlayer::~MusicPlayer()
 	delete music;
 }
 
-void MusicPlayer::openMusic(const char* pathToSong)
+void MusicPlayer::openMusic(const char* pathToSong, bool loop)
 {
 	if (!music->openFromFile(pathToSong))
 	{
 		std::cout << "Song could not be loaded!" << std::endl;
 		std::cout << pathToSong << std::endl;
 	}
+	this->music->setLoop(loop);
 }
 
 void MusicPlayer::playMusic()

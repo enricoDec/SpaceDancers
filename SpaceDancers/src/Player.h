@@ -24,6 +24,8 @@ public:
 	void shoot();
 	void draw(sf::RenderWindow* gameWindow);
 	void update(float deltaTime, sf::RenderWindow* gameWindow);
+	std::vector<Bullet*> getBulletList();
+	sf::Sprite getBulletSprite(int index);
 
 private:
 	int lives;

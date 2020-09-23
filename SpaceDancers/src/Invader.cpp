@@ -17,6 +17,7 @@ Invader::Invader(const char* spritePath, int rowNumber, int invaderType) :animat
 	this->invaderType = invaderType;
 	this->invaderTexture = sf::Texture();
 	this->invaderTexture.loadFromFile(spritePath);
+	Collision::CreateTextureAndBitmask(invaderTexture, spritePath);
 	this->invaderSprite = sf::Sprite(this->invaderTexture);
 	this->invaderSprite.setTextureRect(sf::IntRect(invaderType * 20, 0, 10, 8));
 	this->invaderSprite.setScale(sf::Vector2f(3.0f, 3.0f));
@@ -77,4 +78,9 @@ void Invader::setPosition(sf::Vector2f position) {
 void Invader::spriteAnimation() {
 	this->animationState = !this->animationState;
 	this->invaderSprite.setTextureRect(sf::IntRect(10 * animationState + invaderType * 20, 0, 10, 8));
+}
+
+sf::Sprite Invader::getSprite()
+{
+	return this->invaderSprite;
 }

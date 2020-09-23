@@ -16,10 +16,10 @@
 class MusicPlayer
 {
 public:
-	MusicPlayer(bool loop);
+	MusicPlayer();
 	~MusicPlayer();
 
-	void openMusic(const char* pathToSong);
+	void openMusic(const char* pathToSong, bool loop);
 	void playMusic();
 	void pauseMusic();
 	void stopMusic();

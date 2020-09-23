@@ -14,6 +14,8 @@
 #include "Menu.h"
 #include "InputHandler.h"
 #include "Player.h"
+#include "Collision.h"
+#include "MusicPlayer.h"
 
 #define GAME_STATE_MENU		 0
 #define GAME_STATE_INIT		 1
@@ -33,7 +35,6 @@ public:
 	void render(sf::RenderWindow* gameWindow);
 
 private:
-	void initInvaders(int invaderAmount, int rowsOfInvaders);
 	int topScore;
 	int gameState;
 	int level;
@@ -42,9 +43,14 @@ private:
 	int rowsOfInvaders;
 	const char* spritePath = "C:\\Users\\Enrico\\Desktop\\SpaceDancers\\SpaceDancers\\bin\\Debug\\x64\\res\\InvadersSheet.png";
 	const char* spritePath2 = "C:\\Users\\Enrico\\Desktop\\SpaceDancers\\SpaceDancers\\bin\\Debug\\x64\\res\\PlayerSheet.png";
+	const char* deadInvaderSoundPath = "C:\\Users\\Enrico\\Desktop\\SpaceDancers\\SpaceDancers\\bin\\Debug\\x64\\res\\sound_Effects\\invaderkilled.wav";
 	std::vector<Invader*> invaderList;
 	sf::Clock clock;
 	float fixedDeltaTime;
 	Menu* menu;
 	Player* player;
+	MusicPlayer* musicPlayer;
+
+	void initInvaders(int invaderAmount, int rowsOfInvaders);
+	void checkCollision();
 };

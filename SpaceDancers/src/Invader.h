@@ -10,6 +10,7 @@
 
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "Collision.h"
 
 class Invader
 {
@@ -22,6 +23,7 @@ public:
 	void draw(sf::RenderWindow* gameWindow);
 	void setPosition(sf::Vector2f position);
 	void spriteAnimation();
+	sf::Sprite getSprite();
 
 private:
 	int speed;

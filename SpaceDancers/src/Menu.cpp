@@ -59,9 +59,9 @@ Menu::Menu(float width, float height) :selectedItemIndex(0), startGame(false), i
 	controlsText.setPosition(sf::Vector2f(width / 2, height / 2));
 
 	//Background Music
-	this->musicPlayer = new MusicPlayer(true);
+	this->musicPlayer = new MusicPlayer();
 
-	musicPlayer->openMusic(this->pathToMenuMusic);
+	musicPlayer->openMusic(this->pathToMenuMusic, true);
 	musicPlayer->playMusic();
 }
 

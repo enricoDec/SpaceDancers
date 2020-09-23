@@ -10,6 +10,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include "Collision.h"
 
 class Bullet
 {
@@ -20,6 +21,7 @@ public:
 	bool update(float deltaTime, sf::RenderWindow* gameWindow);
 	void draw(sf::RenderWindow* gameWindow);
 	sf::Vector2f getPosition();
+	sf::Sprite getSprite();
 
 private:
 	sf::Sprite bulletSprite;

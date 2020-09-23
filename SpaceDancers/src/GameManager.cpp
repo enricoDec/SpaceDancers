@@ -15,6 +15,7 @@ invadersPerRow(12), rowsOfInvaders(3), level(0), topScore(0) {
 	this->gameState = GAME_STATE_MENU;
 
 	menu = new Menu(gameWindow->getSize().x, gameWindow->getSize().y);
+	this->musicPlayer = new MusicPlayer();
 }
 
 GameManager::~GameManager() {
@@ -76,6 +77,9 @@ void GameManager::update(sf::RenderWindow* gameWindow) {
 		if (fixedDeltaTime > 1 / 2.0f) {
 			fixedDeltaTime -= 1 / 5.0f;
 		}
+
+		//Check for Collisions between Invaders and Bullets
+		checkCollision();
 	}
 }
 
@@ -90,6 +94,33 @@ void GameManager::initInvaders(int invaderAmountPerRow, int rowsOfInvaders) {
 			invaderList.push_back(invader);
 		}
 		rowY += 40;
+	}
+}
+
+/// <summary>
+/// Checks for collisions between Bullets and Invaders
+/// Removes Invader and Bullet from list
+/// </summary>
+void GameManager::checkCollision()
+{
+	std::vector<Bullet*> bulletList = this->player->getBulletList();
+
+	for (int i = 0; i < bulletList.size(); i++)
+	{
+		for (int j = 0; j < invaderList.size(); j++)
+		{
+			if (Collision::PixelPerfectTest(bulletList[i]->getSprite(), this->invaderList[j]->getSprite()))
+			{
+				//delete invader from list
+				this->invaderList.erase(this->invaderList.begin() + j);
+
+				//Invader die sound
+				this->musicPlayer->openMusic(this->deadInvaderSoundPath, false);
+				this->musicPlayer->playMusic();
+
+				//bulletList.erase(bulletList.begin() + i);
+			}
+		}
 	}
 }
 

@@ -26,7 +26,7 @@ exploded(false), minPlayerMovementSpeed(400), bulletCoolDown(0.4f)
 
 	clock.restart();
 
-	this->musicPlayer = new MusicPlayer(false);
+	this->musicPlayer = new MusicPlayer();
 }
 
 Player::~Player()
@@ -65,7 +65,7 @@ void Player::shoot()
 
 		this->bulletList.push_back(bullet);
 
-		musicPlayer->openMusic(this->shootSoundPath);
+		musicPlayer->openMusic(this->shootSoundPath, false);
 		musicPlayer->playMusic();
 	}
 }
@@ -116,6 +116,16 @@ void Player::update(float deltaTime, sf::RenderWindow* gameWindow)
 	spriteAnimation();
 }
 
+std::vector<Bullet*> Player::getBulletList()
+{
+	return this->bulletList;
+}
+
+sf::Sprite Player::getBulletSprite(int index)
+{
+	return this->bulletList.at(index)->getSprite();
+}
+
 void Player::spriteAnimation()
 {
 	if (this->exploded)
@@ -126,7 +136,6 @@ void Player::spriteAnimation()
 
 void Player::playerExplode()
 {
-	this->musicPlayer = new MusicPlayer(false);
-	musicPlayer->openMusic(this->deadSoundPath);
-	musicPlayer->playMusic();
+	this->musicPlayer->openMusic(this->deadSoundPath, false);
+	this->musicPlayer->playMusic();
 }

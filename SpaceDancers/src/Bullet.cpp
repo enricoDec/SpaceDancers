@@ -19,7 +19,7 @@
 Bullet::Bullet(const char* bulletTexturePath, int xPos, int yPos):bulletSpeed(500)
 {
 	this->bulletTexture = sf::Texture();
-	this->bulletTexture.loadFromFile(bulletTexturePath);
+	Collision::CreateTextureAndBitmask(bulletTexture, bulletTexturePath);
 
 	this->bulletSprite = sf::Sprite(this->bulletTexture);
 	this->bulletSprite.setScale(sf::Vector2f(3.0f, 3.0f));
@@ -68,4 +68,9 @@ void Bullet::draw(sf::RenderWindow* gameWindow)
 sf::Vector2f Bullet::getPosition()
 {
 	return this->bulletSprite.getPosition();
+}
+
+sf::Sprite Bullet::getSprite()
+{
+	return this->bulletSprite;
 }
