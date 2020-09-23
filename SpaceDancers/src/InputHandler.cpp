@@ -9,7 +9,6 @@
 /////////////////////////////////////
 
 #include "InputHandler.h"
-#include <algorithm>
 
 std::vector<int> InputHandler::pressedKeyCodesList;
 std::vector<int> InputHandler::realeasedKeyCodesList;
@@ -49,13 +48,16 @@ bool InputHandler::isKeyHeld(int keyCode)
 
 void InputHandler::registerPress(int keyCode)
 {
-	pressedKeyCodesList.push_back(keyCode);
-	holdKeyCodesList.push_back(keyCode);
+	if (std::find(pressedKeyCodesList.begin(), pressedKeyCodesList.end(), keyCode) == pressedKeyCodesList.end())
+		pressedKeyCodesList.push_back(keyCode);
+	if (std::find(holdKeyCodesList.begin(), holdKeyCodesList.end(), keyCode) == holdKeyCodesList.end())
+		holdKeyCodesList.push_back(keyCode);
 }
 
 void InputHandler::registerRelease(int keyCode)
 {
-	realeasedKeyCodesList.push_back(keyCode);
+	if (std::find(realeasedKeyCodesList.begin(), realeasedKeyCodesList.end(), keyCode) == realeasedKeyCodesList.end())
+		realeasedKeyCodesList.push_back(keyCode);
 
 	// find key code in holdKeyCodesList and delete it since it has been realeased
 	std::vector<int>::iterator position = std::find(holdKeyCodesList.begin(), holdKeyCodesList.end(), keyCode);

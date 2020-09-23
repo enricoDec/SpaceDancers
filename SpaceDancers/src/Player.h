@@ -9,16 +9,38 @@
 /////////////////////////////////////
 
 #pragma once
+#include <SFML/Graphics.hpp>
+#include "InputHandler.h"
+#include "Bullet.h"
+#include <vector>
+#include "MusicPlayer.h"
 
 class Player
 {
 public:
-	Player();
+	Player(const char* spriteSheetPath, sf::RenderWindow* gameWindow);
 	~Player();
-	void move();
+	void move(float deltaTime, int direction, sf::RenderWindow* gameWindow);
 	void shoot();
+	void draw(sf::RenderWindow* gameWindow);
+	void update(float deltaTime, sf::RenderWindow* gameWindow);
 
 private:
 	int lives;
 	int score;
+	bool exploded;
+	int minPlayerMovementSpeed;
+	sf::Sprite playerSprite;
+	sf::Texture playerTexture;
+	std::vector<Bullet*> bulletList;
+	sf::Clock clock;
+	const char* playerSpritePath;
+	float bulletCoolDown;
+	const char* shootSoundPath = "C:\\Users\\Enrico\\Desktop\\SpaceDancers\\SpaceDancers\\bin\\Debug\\x64\\res\\sound_Effects\\shoot.wav";
+	const char* deadSoundPath = "C:\\Users\\Enrico\\Desktop\\SpaceDancers\\SpaceDancers\\bin\\Debug\\x64\\res\\sound_Effects\\explosion.wav";
+	MusicPlayer* musicPlayer;
+
+	void spriteAnimation();
+	void collide();
+	void playerExplode();
 };

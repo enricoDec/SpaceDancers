@@ -55,7 +55,7 @@ void Application::startGame() {
 
         this->gameWindow->clear();
         this->gameManager->render(this->gameWindow);
-        InputHandler::clearKeys();
         this->gameWindow->display();
+        InputHandler::clearKeys();
     }
 }

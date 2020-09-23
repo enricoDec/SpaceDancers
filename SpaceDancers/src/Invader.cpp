@@ -20,15 +20,14 @@ Invader::Invader(const char* spritePath, int rowNumber, int invaderType) :animat
 	this->invaderSprite = sf::Sprite(this->invaderTexture);
 	this->invaderSprite.setTextureRect(sf::IntRect(invaderType * 20, 0, 10, 8));
 	this->invaderSprite.setScale(sf::Vector2f(3.0f, 3.0f));
-	this->invaderSprite.setOrigin(sf::Vector2f(this->invaderSprite.getLocalBounds().width / 2, this->invaderSprite.getLocalBounds().height / 2));
+	this->invaderSprite.setOrigin(sf::Vector2f(this->invaderSprite.getLocalBounds().width / 2, 
+		this->invaderSprite.getLocalBounds().height / 2));
 }
 
 Invader::~Invader() {
-
 }
 
 void Invader::shoot() {
-
 }
 
 void Invader::move(float deltaTime, sf::RenderWindow* gameWindow, std::vector<Invader*> invaderList, int borderOffset) {

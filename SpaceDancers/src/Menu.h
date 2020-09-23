@@ -11,8 +11,10 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "InputHandler.h"
+#include "MusicPlayer.h"
+#include <iostream>
 
-#define MAX_NUMBER_OF_ITEMS 3
+#define MAX_NUMBER_OF_ITEMS 4
 
 class Menu
 {
@@ -33,9 +35,12 @@ private:
 	sf::Font font;
 	sf::Text menuText[MAX_NUMBER_OF_ITEMS];
 	sf::Text helpText;
+	sf::Text controlsText;
 	sf::Texture background;
 	sf::Sprite backgroundSprite;
-
+	bool isInMenu;
+	const char* pathToMenuMusic = "C:\\Users\\Enrico\\Desktop\\SpaceDancers\\SpaceDancers\\bin\\Debug\\x64\\res\\music\\space_invaders_track_1.wav";
+	MusicPlayer* musicPlayer;
 
 	void initMenuText(int menuTextIndex, float width, float heigth);
 };

@@ -9,9 +9,8 @@
 /////////////////////////////////////
 
 #include "Menu.h" 
-#include <iostream>
 
-Menu::Menu(float width, float height) :selectedItemIndex(0), startGame(false) {
+Menu::Menu(float width, float height) :selectedItemIndex(0), startGame(false), isInMenu(true) {
 	//load font
 	if (!font.loadFromFile("C:\\Users\\Enrico\\Desktop\\SpaceDancers\\SpaceDancers\\bin\\Debug\\x64\\res\\fonts\\arial.ttf"))
 	{
@@ -26,65 +25,117 @@ Menu::Menu(float width, float height) :selectedItemIndex(0), startGame(false) {
 
 	//Help Text
 	helpText.setFont(font);
+	helpText.setCharacterSize(helpText.getCharacterSize() - 6);
 	helpText.setString("Use Up & Down Arrows to Navigate and Enter to confirm");
 	helpText.setFillColor(sf::Color::White);
-	helpText.setPosition(sf::Vector2f(0, height - 50));
+	helpText.setPosition(sf::Vector2f(10, height - 50));
 
-	menuText[0].setCharacterSize(menuText[0].getCharacterSize() + 10);
+	//Menu Text
 	menuText[0].setOutlineColor(sf::Color::Yellow);
 	menuText[0].setOutlineThickness(0.8f);
 	menuText[0].setString("Play");
 
+	menuText[1].setString("Options");
+	menuText[2].setString("Controls");
+	menuText[3].setString("Exit");
+
+
 	initMenuText(0, width, height);
 	initMenuText(1, width, height);
 	initMenuText(2, width, height);
+	initMenuText(3, width, height);
 
-	menuText[1].setString("Options");
-	menuText[2].setString("Exit");
+
+	menuText[0].setCharacterSize(menuText[0].getCharacterSize() + 10);
+
+	//Controlls
+	controlsText.setString("Right Arrow -> Move Rigth \nLeft Arrow -> Move Left \nSpacebar -> Shoot \n\nPress Spacebar to go back");
+	controlsText.setFont(font);
+	controlsText.setOutlineColor(sf::Color::Black);
+	controlsText.setOutlineThickness(4.0f);
+	controlsText.setCharacterSize(controlsText.getCharacterSize() + 10);
+	controlsText.setFillColor(sf::Color::White);
+	controlsText.setOrigin(sf::Vector2f(controlsText.getLocalBounds().width / 2, controlsText.getLocalBounds().height / 2));
+	controlsText.setPosition(sf::Vector2f(width / 2, height / 2));
+
+	//Background Music
+	this->musicPlayer = new MusicPlayer(true);
+
+	musicPlayer->openMusic(this->pathToMenuMusic);
+	musicPlayer->playMusic();
 }
 
 Menu::~Menu() {
 }
 
+
 void Menu::initMenuText(int menuTextIndex, float width, float height) {
 	menuText[menuTextIndex].setFont(font);
 	menuText[menuTextIndex].setFillColor(sf::Color::White);
-	menuText[menuTextIndex].setPosition(sf::Vector2f(width / 3, (height / 5) + 50 * (menuTextIndex + 1)));
+	menuText[menuTextIndex].setCharacterSize(menuText[menuTextIndex].getCharacterSize() + 10);
+	menuText[menuTextIndex].setPosition(sf::Vector2f(width / 3, height / 3 + menuTextIndex * 80));
 }
 
 void Menu::draw(sf::RenderWindow* gameWindow) {
 	gameWindow->draw(this->backgroundSprite);
-	gameWindow->draw(this->helpText);
-	for (int i = 0; i < MAX_NUMBER_OF_ITEMS; i++)
+
+	if (this->isInMenu)
 	{
-		gameWindow->draw(menuText[i]);
+		gameWindow->draw(this->helpText);
+		for (int i = 0; i < MAX_NUMBER_OF_ITEMS; i++)
+		{
+			gameWindow->draw(menuText[i]);
+		}
+	}
+	else
+	{
+		gameWindow->draw(this->controlsText);
 	}
 }
 
 void Menu::update(sf::RenderWindow* gameWindow) {
 
-	if (InputHandler::isKeyPressed(sf::Keyboard::Up))
+	if (this->isInMenu)
 	{
-		moveUp();
-	}
-	if (InputHandler::isKeyPressed(sf::Keyboard::Down))
-	{
-		moveDown();
-	}
-	if (InputHandler::isKeyPressed(sf::Keyboard::Return))
-	{
-		switch (getPressedItem())
+		if (InputHandler::isKeyPressed(sf::Keyboard::Up))
 		{
-		case 0:
-			std::cout << "Play button has been pressed" << std::endl;
-			startGame = true;
-			break;
-		case 1:
-			std::cout << "Option button has been pressed" << std::endl;
-			break;
-		case 2:
+			moveUp();
+		}
+		if (InputHandler::isKeyPressed(sf::Keyboard::Down))
+		{
+			moveDown();
+		}
+		if (InputHandler::isKeyPressed(sf::Keyboard::Escape))
+		{
 			gameWindow->close();
-			break;
+		}
+		if (InputHandler::isKeyPressed(sf::Keyboard::Return))
+		{
+			switch (getPressedItem())
+			{
+			case 0:
+				std::cout << "Play button has been pressed" << std::endl;
+				startGame = true;
+				this->musicPlayer->stopMusic();
+				break;
+			case 1:
+				std::cout << "Option button has been pressed" << std::endl;
+				break;
+			case 2:
+				std::cout << "Controls button has been pressed" << std::endl;
+				this->isInMenu = false;
+				break;
+			case 3:
+				gameWindow->close();
+				break;
+			}
+		}
+	}
+	else
+	{
+		if (InputHandler::isKeyPressed(sf::Keyboard::Space))
+		{
+			isInMenu = true;
 		}
 	}
 }

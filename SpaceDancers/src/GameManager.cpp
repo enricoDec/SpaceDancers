@@ -18,13 +18,17 @@ invadersPerRow(12), rowsOfInvaders(3), level(0), topScore(0) {
 }
 
 GameManager::~GameManager() {
-	for (int i = 0; i < invaderList.size(); i++)
+	if (!invaderList.empty())
 	{
-		delete invaderList.at(i);
+		for (int i = 0; i < invaderList.size(); i++)
+		{
+			delete invaderList.at(i);
+		}
 	}
-}
-
-void GameManager::startGame() {
+	delete menu;
+	delete player;
+	delete spritePath;
+	delete spritePath;
 }
 
 void GameManager::update(sf::RenderWindow* gameWindow) {
@@ -32,6 +36,7 @@ void GameManager::update(sf::RenderWindow* gameWindow) {
 	float deltaTime = clock.restart().asSeconds();
 	fixedDeltaTime += deltaTime;
 
+	//Menu
 	if (this->gameState == GAME_STATE_MENU)
 	{
 		menu->update(gameWindow);
@@ -41,13 +46,22 @@ void GameManager::update(sf::RenderWindow* gameWindow) {
 		}
 	}
 
+	//Init Game
 	if (this->gameState == GAME_STATE_INIT)
 	{
 		initInvaders(invadersPerRow, rowsOfInvaders);
+		this->player = new Player(this->spritePath2, gameWindow);
+
 		this->gameState = GAME_STATE_RUNNING;
 	}
 
+	//Game Running
 	if (this->gameState == GAME_STATE_RUNNING) {
+		
+		//Update Player
+		this->player->update(deltaTime, gameWindow);
+
+		//Update Invaders
 		for (int i = 0; i < invaderList.size(); i++)
 		{
 			// move entire row at once
@@ -79,6 +93,10 @@ void GameManager::initInvaders(int invaderAmountPerRow, int rowsOfInvaders) {
 	}
 }
 
+
+void GameManager::startGame() {
+}
+
 void GameManager::render(sf::RenderWindow* gameWindow) {
 	switch (gameState)
 	{
@@ -90,6 +108,8 @@ void GameManager::render(sf::RenderWindow* gameWindow) {
 		{
 			invaderList.at(i)->draw(gameWindow);
 		}
+
+		this->player->draw(gameWindow);
 		break;
 	}
 }

@@ -13,6 +13,7 @@
 #include "Invader.h"
 #include "Menu.h"
 #include "InputHandler.h"
+#include "Player.h"
 
 #define GAME_STATE_MENU		 0
 #define GAME_STATE_INIT		 1
@@ -40,8 +41,10 @@ private:
 	int invadersPerRow;
 	int rowsOfInvaders;
 	const char* spritePath = "C:\\Users\\Enrico\\Desktop\\SpaceDancers\\SpaceDancers\\bin\\Debug\\x64\\res\\InvadersSheet.png";
+	const char* spritePath2 = "C:\\Users\\Enrico\\Desktop\\SpaceDancers\\SpaceDancers\\bin\\Debug\\x64\\res\\PlayerSheet.png";
 	std::vector<Invader*> invaderList;
 	sf::Clock clock;
 	float fixedDeltaTime;
 	Menu* menu;
+	Player* player;
 };
