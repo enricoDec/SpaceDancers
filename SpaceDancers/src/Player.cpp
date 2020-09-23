@@ -15,7 +15,11 @@ exploded(false), minPlayerMovementSpeed(400), bulletCoolDown(0.4f)
 {
 	this->playerSpritePath = spriteSheetPath;
 	this->playerTexture = sf::Texture();
-	this->playerTexture.loadFromFile(playerSpritePath);
+	if (!this->playerTexture.loadFromFile(this->playerSpritePath))
+	{
+		// Texture could not be found
+		std::cout << "Player Texture could not be loaded" << std::endl;
+	}
 
 	this->playerSprite = sf::Sprite(this->playerTexture);
 	this->playerSprite.setScale(sf::Vector2f(3.0f, 3.0f));
@@ -92,8 +96,14 @@ void Player::draw(sf::RenderWindow* gameWindow)
 		bulletList.at(i)->draw(gameWindow);
 	}
 
-	//draw GUI
+	//draw player lives and score
 	gameWindow->draw(this->scoreText);
+	
+	//gameWindow->draw(playerLivesSprite);
+	for (int i = 0; i < this->livesList.size(); i++)
+	{
+		gameWindow->draw(this->livesList.at(i));
+	}
 }
 
 void Player::update(float deltaTime, sf::RenderWindow* gameWindow)
@@ -148,6 +158,12 @@ void Player::addPoints(int points)
 	this->score += points;
 }
 
+void Player::removeLife()
+{
+	this->lives--;
+	this->livesList.erase(this->livesList.begin());
+}
+
 void Player::spriteAnimation()
 {
 	if (this->exploded)
@@ -164,10 +180,29 @@ void Player::playerExplode()
 
 void Player::playerGui(sf::RenderWindow* gameWindow)
 {
+	//Score Text
 	scoreText = sf::Text();
 	scoreText.setString(std::to_string(this->score));
 	scoreText.setFont(font);
 	scoreText.setOrigin(sf::Vector2f(scoreText.getPosition().x, scoreText.getPosition().y));
 	scoreText.setPosition(sf::Vector2f(gameWindow->getSize().x - scoreText.getGlobalBounds().width - 160,
 		0 + scoreText.getGlobalBounds().height));
+
+	//Lives Display
+	for (int i = 0; i < this->lives; i++)
+	{
+		addLife();
+	}
+}
+
+void Player::addLife()
+{
+	this->playerLivesSprite = sf::Sprite(this->playerTexture);
+	this->playerLivesSprite.setScale(sf::Vector2f(3.0f, 3.0f));
+	this->playerLivesSprite.setTextureRect(sf::IntRect(0, 0, 11, 8));
+	this->playerLivesSprite.setOrigin(sf::Vector2f(this->playerLivesSprite.getLocalBounds().width / 2,
+		this->playerLivesSprite.getLocalBounds().height / 2));
+	this->playerLivesSprite.setPosition(sf::Vector2f(playerLivesSprite.getGlobalBounds().width + 40 * livesList.size(), 20));
+
+	this->livesList.push_back(playerLivesSprite);
 }

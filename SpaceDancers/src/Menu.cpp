@@ -14,12 +14,16 @@ Menu::Menu(float width, float height) :selectedItemIndex(0), startGame(false), i
 	//load font
 	if (!font.loadFromFile("C:\\Users\\Enrico\\Desktop\\SpaceDancers\\SpaceDancers\\bin\\Debug\\x64\\res\\fonts\\arial.ttf"))
 	{
-		//handle error
+		//texture could not be loaded / found
 		std::cout << "Font could not be loaded" << std::endl;
 	}
 
 	//menu background
-	this->background.loadFromFile("C:\\Users\\Enrico\\Desktop\\SpaceDancers\\SpaceDancers\\bin\\Debug\\x64\\res\\background.jpg");
+	if (!this->background.loadFromFile("C:\\Users\\Enrico\\Desktop\\SpaceDancers\\SpaceDancers\\bin\\Debug\\x64\\res\\background.jpg"))
+	{
+		//texture could not be loaded / found
+		std::cout << "Menu Background Texture could not be loaded" << std::endl;
+	}
 	this->backgroundSprite = sf::Sprite(this->background);
 	this->backgroundSprite.setScale(sf::Vector2f(width / background.getSize().x, height / background.getSize().y));
 

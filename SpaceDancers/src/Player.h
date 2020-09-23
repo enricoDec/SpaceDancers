@@ -27,6 +27,8 @@ public:
 	std::vector<Bullet*> getBulletList();
 	sf::Sprite getBulletSprite(int index);
 	void addPoints(int points);
+	void removeLife();
+	void addLife();
 
 private:
 	int lives;
@@ -45,6 +47,8 @@ private:
 	MusicPlayer* musicPlayer;
 	sf::Text scoreText;
 	sf::Font font;
+	sf::Sprite playerLivesSprite;
+	std::vector<sf::Sprite> livesList;
 
 	void spriteAnimation();
 	void playerExplode();
