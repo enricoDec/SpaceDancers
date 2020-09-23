@@ -26,6 +26,7 @@ public:
 	void update(float deltaTime, sf::RenderWindow* gameWindow);
 	std::vector<Bullet*> getBulletList();
 	sf::Sprite getBulletSprite(int index);
+	void addPoints(int points);
 
 private:
 	int lives;
@@ -40,9 +41,12 @@ private:
 	float bulletCoolDown;
 	const char* shootSoundPath = "C:\\Users\\Enrico\\Desktop\\SpaceDancers\\SpaceDancers\\bin\\Debug\\x64\\res\\sound_Effects\\shoot.wav";
 	const char* deadSoundPath = "C:\\Users\\Enrico\\Desktop\\SpaceDancers\\SpaceDancers\\bin\\Debug\\x64\\res\\sound_Effects\\explosion.wav";
+	const char* fontPath = "C:\\Users\\Enrico\\Desktop\\SpaceDancers\\SpaceDancers\\bin\\Debug\\x64\\res\\fonts\\invader.ttf";
 	MusicPlayer* musicPlayer;
+	sf::Text scoreText;
+	sf::Font font;
 
 	void spriteAnimation();
-	void collide();
 	void playerExplode();
+	void playerGui(sf::RenderWindow* gameWindow);
 };

@@ -119,6 +119,9 @@ void GameManager::checkCollision()
 				this->musicPlayer->playMusic();
 
 				//bulletList.erase(bulletList.begin() + i);
+
+				//increase score of player
+				this->player->addPoints(20);
 			}
 		}
 	}

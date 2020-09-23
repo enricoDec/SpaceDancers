@@ -26,7 +26,18 @@ exploded(false), minPlayerMovementSpeed(400), bulletCoolDown(0.4f)
 
 	clock.restart();
 
+	//Obejct to handle sound
 	this->musicPlayer = new MusicPlayer();
+
+	//load font
+	if (!font.loadFromFile("C:\\Users\\Enrico\\Desktop\\SpaceDancers\\SpaceDancers\\bin\\Debug\\x64\\res\\fonts\\invader.ttf"))
+	{
+		//handle error
+		std::cout << "Font could not be loaded" << std::endl;
+	}
+
+	//init player score and lives
+	playerGui(gameWindow);
 }
 
 Player::~Player()
@@ -80,6 +91,9 @@ void Player::draw(sf::RenderWindow* gameWindow)
 	{
 		bulletList.at(i)->draw(gameWindow);
 	}
+
+	//draw GUI
+	gameWindow->draw(this->scoreText);
 }
 
 void Player::update(float deltaTime, sf::RenderWindow* gameWindow)
@@ -114,6 +128,9 @@ void Player::update(float deltaTime, sf::RenderWindow* gameWindow)
 	}
 
 	spriteAnimation();
+
+	//update score
+	this->scoreText.setString(std::to_string(this->score));
 }
 
 std::vector<Bullet*> Player::getBulletList()
@@ -124,6 +141,11 @@ std::vector<Bullet*> Player::getBulletList()
 sf::Sprite Player::getBulletSprite(int index)
 {
 	return this->bulletList.at(index)->getSprite();
+}
+
+void Player::addPoints(int points)
+{
+	this->score += points;
 }
 
 void Player::spriteAnimation()
@@ -138,4 +160,14 @@ void Player::playerExplode()
 {
 	this->musicPlayer->openMusic(this->deadSoundPath, false);
 	this->musicPlayer->playMusic();
+}
+
+void Player::playerGui(sf::RenderWindow* gameWindow)
+{
+	scoreText = sf::Text();
+	scoreText.setString(std::to_string(this->score));
+	scoreText.setFont(font);
+	scoreText.setOrigin(sf::Vector2f(scoreText.getPosition().x, scoreText.getPosition().y));
+	scoreText.setPosition(sf::Vector2f(gameWindow->getSize().x - scoreText.getGlobalBounds().width - 160,
+		0 + scoreText.getGlobalBounds().height));
 }
