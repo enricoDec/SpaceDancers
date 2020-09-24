@@ -31,9 +31,10 @@ class GameManager
 public:
 	GameManager(sf::RenderWindow* gameWindow);
 	~GameManager();
-	void startGame();
+
 	void update(sf::RenderWindow* gameWindow);
 	void render(sf::RenderWindow* gameWindow);
+	void pauseGame();
 
 private:
 	int topScore;
@@ -42,10 +43,11 @@ private:
 	int borderOffset;
 	int invadersPerRow;
 	int rowsOfInvaders;
-	const char* invaderSheetPath = "C:\\Users\\Enrico\\Desktop\\SpaceDancers\\SpaceDancers\\bin\\Debug\\x64\\res\\InvadersSheet.png";
-	const char* playerSheetPath = "C:\\Users\\Enrico\\Desktop\\SpaceDancers\\SpaceDancers\\bin\\Debug\\x64\\res\\PlayerSheet.png";
-	const char* deadInvaderSoundPath = "C:\\Users\\Enrico\\Desktop\\SpaceDancers\\SpaceDancers\\bin\\Debug\\x64\\res\\sound_Effects\\invaderkilled.wav";
-	const char* explosionSoundPath = "C:\\Users\\Enrico\\Desktop\\SpaceDancers\\SpaceDancers\\bin\\Debug\\x64\\res\\sound_Effects\\explosion.wav";
+	const char* invaderSheetPath = "res\\InvadersSheet.png";
+	const char* playerSheetPath = "res\\PlayerSheet.png";
+	const char* deadInvaderSoundPath = "res\\sound_Effects\\invaderkilled.wav";
+	const char* explosionSoundPath = "res\\sound_Effects\\explosion.wav";
+	const char* pixelFontPath = "res\\fonts\\invader.ttf";
 	std::vector<Invader*> invaderList;
 	sf::Clock clock;
 	float fixedDeltaTime;
@@ -55,8 +57,13 @@ private:
 	Ufo* ufo;
 	bool isUfoAlive;
 	sf::Clock ufoSpawnClock;
+	sf::Text pauseText;
+	sf::Font pixelFont;
+	int mostLeftInvader;
+	int mostRightInvader;
 
 	void initInvaders(int invaderAmount, int rowsOfInvaders);
 	void checkCollision();
 	void spawnUfo(int speed, sf::RenderWindow* gameWindow);
+	void findMostLeftandRightInvader(std::vector<Invader*> invaderList, sf::RenderWindow* gameWindow);
 };

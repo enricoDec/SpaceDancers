@@ -18,9 +18,11 @@
 /// <param name="yPos">starting y position of the bullet</param>
 Bullet::Bullet(const char* bulletTexturePath, int xPos, int yPos):bulletSpeed(500)
 {
+	//Bullet Texture
 	this->bulletTexture = sf::Texture();
 	Collision::CreateTextureAndBitmask(bulletTexture, bulletTexturePath);
 
+	//Bullet Sprite
 	this->bulletSprite = sf::Sprite(this->bulletTexture);
 	this->bulletSprite.setScale(sf::Vector2f(3.0f, 3.0f));
 	this->bulletSprite.setTextureRect(sf::IntRect(44, 0, 11, 8));
@@ -68,9 +70,4 @@ void Bullet::draw(sf::RenderWindow* gameWindow)
 sf::Vector2f Bullet::getPosition()
 {
 	return this->bulletSprite.getPosition();
-}
-
-sf::Sprite Bullet::getSprite()
-{
-	return this->bulletSprite;
 }

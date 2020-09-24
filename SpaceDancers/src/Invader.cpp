@@ -11,7 +11,8 @@
 #include "Invader.h"
 #include <iostream>
 
-Invader::Invader(const char* spritePath, int rowNumber, int invaderType) :animationState(0), speed(60), rowHeigth(60) {
+Invader::Invader(const char* spritePath, int rowNumber, int invaderType) :animationState(0), speed(60),
+rowHeigth(60) {
 
 	this->rowNumber = rowNumber;
 	this->invaderType = invaderType;
@@ -21,12 +22,12 @@ Invader::Invader(const char* spritePath, int rowNumber, int invaderType) :animat
 		// Texture could not be found
 		std::cout << "Invader Texture could not be loaded" << std::endl;
 	}
-	
+
 	Collision::CreateTextureAndBitmask(invaderTexture, spritePath);
 	this->invaderSprite = sf::Sprite(this->invaderTexture);
 	this->invaderSprite.setTextureRect(sf::IntRect(invaderType * 20, 0, 10, 8));
 	this->invaderSprite.setScale(sf::Vector2f(3.5f, 3.5f));
-	this->invaderSprite.setOrigin(sf::Vector2f(this->invaderSprite.getLocalBounds().width / 2, 
+	this->invaderSprite.setOrigin(sf::Vector2f(this->invaderSprite.getLocalBounds().width / 2,
 		this->invaderSprite.getLocalBounds().height / 2));
 }
 
@@ -36,12 +37,13 @@ Invader::~Invader() {
 void Invader::shoot() {
 }
 
-void Invader::move(float deltaTime, sf::RenderWindow* gameWindow, std::vector<Invader*> invaderList, int borderOffset) {
+void Invader::move(float deltaTime, sf::RenderWindow* gameWindow, std::vector<Invader*> invaderList, int borderOffset, int mostLeftInvaderIndex, int mostRightInvaderIndex) {
 	//std::cout << "(" << gameWindow->getSize().x << ")" << " (" << invaderSprite.getPosition().x << ")" << std::endl;
 	//std::cout << "(" << this->invaderSprite.getPosition().x << ")" << "(" << this->invaderSprite.getPosition().y << ")" << std::endl;
 	//std::cout << deltaTime << std::endl;
 
 	// TODO: swap offset with this->invaderSprite.getGlobalBounds().width
+	// TODO: fix this shit
 
 	if ((this->invaderSprite.getPosition().x + borderOffset >= gameWindow->getSize().x)
 		|| (this->invaderSprite.getPosition().x - borderOffset <= 0))
@@ -49,6 +51,7 @@ void Invader::move(float deltaTime, sf::RenderWindow* gameWindow, std::vector<In
 		moveRow(invaderList);
 	}
 
+	// Prevent invaders getting "stuck" between border and permanently falling down
 	float x = this->invaderSprite.getPosition().x + speed * deltaTime;
 
 	if (x - borderOffset <= 0)
@@ -71,7 +74,6 @@ void Invader::moveRow(std::vector<Invader*> invaderList)
 	}
 }
 
-
 void Invader::draw(sf::RenderWindow* gameWindow) {
 	gameWindow->draw(this->invaderSprite);
 }
@@ -83,9 +85,4 @@ void Invader::setPosition(sf::Vector2f position) {
 void Invader::spriteAnimation() {
 	this->animationState = !this->animationState;
 	this->invaderSprite.setTextureRect(sf::IntRect(10 * animationState + invaderType * 20, 0, 10, 8));
-}
-
-sf::Sprite Invader::getSprite()
-{
-	return this->invaderSprite;
 }

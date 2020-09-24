@@ -14,7 +14,6 @@
 int main()
 {
     Application* app = new Application(1200, 800, false);
-    app->initGame();
     app->startGame();
 
     delete app;
@@ -37,6 +36,6 @@ Fix Invader Position
 Add explosion animation to invaders
 Add Invader Shooting
 Add Invaders Music Movement
-Add Bonuses
+Add Bonuses Bonus
 Implement Pause
 */

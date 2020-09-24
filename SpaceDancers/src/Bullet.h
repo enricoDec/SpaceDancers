@@ -15,17 +15,16 @@
 class Bullet
 {
 public:
+	sf::Sprite bulletSprite;
+
 	Bullet(const char* bulletTexturePath, int xPos, int yPos);
 	~Bullet();
 
 	bool update(float deltaTime, sf::RenderWindow* gameWindow);
 	void draw(sf::RenderWindow* gameWindow);
 	sf::Vector2f getPosition();
-	sf::Sprite getSprite();
-
 
 private:
-	sf::Sprite bulletSprite;
 	sf::Texture bulletTexture;
 	int bulletSpeed;
 };

@@ -21,7 +21,7 @@ public:
 	std::vector<Bullet*> bulletList;
 	int score;
 
-	Player(const char* spriteSheetPath, sf::RenderWindow* gameWindow);
+	Player(sf::Font* pixelFont, const char* spriteSheetPath, sf::RenderWindow* gameWindow);
 	~Player();
 	void move(float deltaTime, int direction, sf::RenderWindow* gameWindow);
 	void shoot();
@@ -40,12 +40,11 @@ private:
 	sf::Clock clock;
 	const char* playerSpritePath;
 	float bulletCoolDown;
-	const char* shootSoundPath = "C:\\Users\\Enrico\\Desktop\\SpaceDancers\\SpaceDancers\\bin\\Debug\\x64\\res\\sound_Effects\\shoot.wav";
-	const char* deadSoundPath = "C:\\Users\\Enrico\\Desktop\\SpaceDancers\\SpaceDancers\\bin\\Debug\\x64\\res\\sound_Effects\\explosion.wav";
-	const char* fontPath = "C:\\Users\\Enrico\\Desktop\\SpaceDancers\\SpaceDancers\\bin\\Debug\\x64\\res\\fonts\\invader.ttf";
+	const char* shootSoundPath = "res\\sound_Effects\\shoot.wav";
+	const char* deadSoundPath = "res\\sound_Effects\\explosion.wav";
 	MusicPlayer* musicPlayer;
 	sf::Text scoreText;
-	sf::Font font;
+	sf::Font* pixelFont;
 	sf::Sprite playerLivesSprite;
 	std::vector<sf::Sprite> livesList;
 

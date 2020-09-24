@@ -39,7 +39,8 @@ private:
 	sf::Texture background;
 	sf::Sprite backgroundSprite;
 	bool isInMenu;
-	const char* pathToMenuMusic = "C:\\Users\\Enrico\\Desktop\\SpaceDancers\\SpaceDancers\\bin\\Debug\\x64\\res\\music\\space_invaders_track_1.wav";
+	const char* pathToMenuMusic = "res\\music\\space_invaders_track_1.wav";
+	const char* pathToBackground = "res\\background.jpg";
 	MusicPlayer* musicPlayer;
 
 	void initMenuText(int menuTextIndex, float width, float heigth);

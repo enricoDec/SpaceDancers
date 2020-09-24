@@ -10,9 +10,10 @@
 
 #include "Player.h"
 
-Player::Player(const char* spriteSheetPath, sf::RenderWindow* gameWindow) :lives(3), score(0),
+Player::Player(sf::Font* pixelFont, const char* spriteSheetPath, sf::RenderWindow* gameWindow) :lives(3), score(0),
 exploded(false), minPlayerMovementSpeed(400), bulletCoolDown(0.4f)
 {
+	this->pixelFont = pixelFont;
 	this->playerSpritePath = spriteSheetPath;
 	this->playerTexture = sf::Texture();
 	if (!this->playerTexture.loadFromFile(this->playerSpritePath))
@@ -33,13 +34,6 @@ exploded(false), minPlayerMovementSpeed(400), bulletCoolDown(0.4f)
 	//Obejct to handle sound
 	this->musicPlayer = new MusicPlayer();
 
-	//load font
-	if (!font.loadFromFile("C:\\Users\\Enrico\\Desktop\\SpaceDancers\\SpaceDancers\\bin\\Debug\\x64\\res\\fonts\\invader.ttf"))
-	{
-		//handle error
-		std::cout << "Font could not be loaded" << std::endl;
-	}
-
 	//init player score and lives
 	playerGui(gameWindow);
 }
@@ -55,7 +49,6 @@ Player::~Player()
 			delete bulletList.at(i);
 		}
 	}
-
 }
 
 void Player::move(float deltaTime, int direction, sf::RenderWindow* gameWindow)
@@ -114,6 +107,7 @@ void Player::update(float deltaTime, sf::RenderWindow* gameWindow)
 		//if Bullet out of bounds remove it from list
 		if (bulletList.at(i)->update(deltaTime, gameWindow))
 		{
+			delete bulletList.at(i);
 			bulletList.erase(bulletList.begin() + i);
 		}
 	}
@@ -168,7 +162,7 @@ void Player::playerGui(sf::RenderWindow* gameWindow)
 	//Score Text
 	scoreText = sf::Text();
 	scoreText.setString(std::to_string(this->score));
-	scoreText.setFont(font);
+	scoreText.setFont(*this->pixelFont);
 	scoreText.setOrigin(sf::Vector2f(scoreText.getPosition().x, scoreText.getPosition().y));
 	scoreText.setPosition(sf::Vector2f(gameWindow->getSize().x - scoreText.getGlobalBounds().width - 160,
 		0 + scoreText.getGlobalBounds().height));

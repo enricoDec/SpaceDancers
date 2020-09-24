@@ -19,7 +19,7 @@ Menu::Menu(float width, float height) :selectedItemIndex(0), startGame(false), i
 	}
 
 	//menu background
-	if (!this->background.loadFromFile("C:\\Users\\Enrico\\Desktop\\SpaceDancers\\SpaceDancers\\bin\\Debug\\x64\\res\\background.jpg"))
+	if (!this->background.loadFromFile(pathToBackground))
 	{
 		//texture could not be loaded / found
 		std::cout << "Menu Background Texture could not be loaded" << std::endl;
@@ -53,7 +53,7 @@ Menu::Menu(float width, float height) :selectedItemIndex(0), startGame(false), i
 	menuText[0].setCharacterSize(menuText[0].getCharacterSize() + 10);
 
 	//Controlls
-	controlsText.setString("Right Arrow -> Move Rigth \nLeft Arrow -> Move Left \nSpacebar -> Shoot \n\nPress Spacebar to go back");
+	controlsText.setString("Right Arrow -> Move Rigth \nLeft Arrow -> Move Left \nSpacebar -> Shoot \nP -> Pause \n\nPress Spacebar to go back");
 	controlsText.setFont(font);
 	controlsText.setOutlineColor(sf::Color::Black);
 	controlsText.setOutlineThickness(4.0f);
