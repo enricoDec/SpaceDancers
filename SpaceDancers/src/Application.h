@@ -18,7 +18,6 @@ public:
 	Application(unsigned int windowWidth, unsigned int windowHeight, bool isFullScreen);
 	~Application();
 	
-	void initGame();
 	void startGame();
 private:
 	sf::RenderWindow* gameWindow;

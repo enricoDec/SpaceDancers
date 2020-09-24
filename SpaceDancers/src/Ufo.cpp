@@ -1,6 +1,6 @@
 #include "Ufo.h"
 
-Ufo::Ufo(const char* ufoTexturePath, sf::RenderWindow* gameWindow): speed(20)
+Ufo::Ufo(int speed, const char* ufoTexturePath, sf::RenderWindow* gameWindow)
 {
 	this->ufoTexture = sf::Texture();
 	if (!this->ufoTexture.loadFromFile(ufoTexturePath))
@@ -9,6 +9,7 @@ Ufo::Ufo(const char* ufoTexturePath, sf::RenderWindow* gameWindow): speed(20)
 		std::cout << "Invader Texture could not be loaded" << std::endl;
 	}
 
+	this->speed = speed;
 	Collision::CreateTextureAndBitmask(ufoTexture, ufoTexturePath);
 	this->ufoSprite = sf::Sprite(this->ufoTexture);
 	this->ufoSprite.setTextureRect(sf::IntRect(60, 0, 16, 8));

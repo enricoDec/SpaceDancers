@@ -53,7 +53,10 @@ private:
 	Player* player;
 	MusicPlayer* musicPlayer;
 	Ufo* ufo;
+	bool isUfoAlive;
+	sf::Clock ufoSpawnClock;
 
 	void initInvaders(int invaderAmount, int rowsOfInvaders);
 	void checkCollision();
+	void spawnUfo(int speed, sf::RenderWindow* gameWindow);
 };

@@ -22,11 +22,10 @@ Application::~Application() {
     delete gameWindow;
 }
 
-
-void Application::initGame() {
-
-}
-
+/// <summary>
+/// Main game loop
+/// Register User Input
+/// </summary>
 void Application::startGame() {
     while (this->gameWindow->isOpen())
     {
@@ -45,8 +44,6 @@ void Application::startGame() {
             else if (event.type == sf::Event::Resized)
             {
                 std::cout << event.size.width << std::endl;
-                //this->gameWindow->setSize(sf::Vector2u(event.size.width, event.size.height));
-                //gameWindow->create(sf::VideoMode(event.size.width, event.size.height), "Space Dancers");
                 gameWindow->setView(sf::View(sf::Vector2f(event.size.width / 2, event.size.height / 2), 
                     sf::Vector2f(event.size.width, event.size.height)));
             }

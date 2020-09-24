@@ -17,7 +17,7 @@ class Ufo
 public:
 	sf::Sprite ufoSprite;
 
-	Ufo(const char* ufoTexturePath, sf::RenderWindow* gameWindow);
+	Ufo(int speed, const char* ufoTexturePath, sf::RenderWindow* gameWindow);
 	~Ufo();
 	
 	void update(sf::RenderWindow* gameWindow, float deltaTime);

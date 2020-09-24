@@ -11,7 +11,7 @@
 #include "GameManager.h"
 
 GameManager::GameManager(sf::RenderWindow* gameWindow) :fixedDeltaTime(0.0f), borderOffset(50),
-invadersPerRow(12), rowsOfInvaders(3), level(0), topScore(0) {
+invadersPerRow(12), rowsOfInvaders(3), level(0), topScore(0), isUfoAlive(false) {
 	this->gameState = GAME_STATE_MENU;
 
 	menu = new Menu(gameWindow->getSize().x, gameWindow->getSize().y);
@@ -21,9 +21,9 @@ invadersPerRow(12), rowsOfInvaders(3), level(0), topScore(0) {
 GameManager::~GameManager() {
 	if (!invaderList.empty())
 	{
-		for (int i = 0; i < invaderList.size(); i++)
+		for (int i = 0; i < this->invaderList.size(); i++)
 		{
-			delete invaderList.at(i);
+			delete this->invaderList.at(i);
 		}
 	}
 	delete menu;
@@ -55,9 +55,6 @@ void GameManager::update(sf::RenderWindow* gameWindow) {
 		initInvaders(invadersPerRow, rowsOfInvaders);
 		this->player = new Player(this->playerSheetPath, gameWindow);
 
-		//TEMPPPPPPP
-		this->ufo = new Ufo(this->invaderSheetPath, gameWindow);
-
 		this->gameState = GAME_STATE_RUNNING;
 	}
 
@@ -68,23 +65,31 @@ void GameManager::update(sf::RenderWindow* gameWindow) {
 		this->player->update(deltaTime, gameWindow);
 
 		//Update Invaders
-		for (int i = 0; i < invaderList.size(); i++)
+		for (int i = 0; i < this->invaderList.size(); i++)
 		{
 			// move entire row at once
-			invaderList.at(i)->move(deltaTime, gameWindow, invaderList, borderOffset);
+			this->invaderList.at(i)->move(deltaTime, gameWindow, this->invaderList, borderOffset);
 
 			// Sprite Animation 2 times a sec
 			if (fixedDeltaTime > 1 / 2.0f)
 			{
-				invaderList.at(i)->spriteAnimation();
+				this->invaderList.at(i)->spriteAnimation();
 			}
 		}
 		if (fixedDeltaTime > 1 / 2.0f) {
 			fixedDeltaTime -= 1 / 5.0f;
 		}
 
-		//Randomly Spawn an Ufo
-		this->ufo->update(gameWindow, deltaTime);
+		//Update Spawn position
+		if (this->isUfoAlive)
+			this->ufo->update(gameWindow, deltaTime);
+
+		//Spawn an Ufo each 30sec
+		if (ufoSpawnClock.getElapsedTime().asSeconds() > 30.0f)
+		{
+			ufoSpawnClock.restart();
+			spawnUfo(60, gameWindow);
+		}
 
 		//Check for Collisions between Invaders and Bullets
 		checkCollision();
@@ -92,6 +97,7 @@ void GameManager::update(sf::RenderWindow* gameWindow) {
 }
 
 void GameManager::initInvaders(int invaderAmountPerRow, int rowsOfInvaders) {
+	//Space between top of Window on first row of invaders
 	int rowY = 50;
 
 	for (int j = 0; j < rowsOfInvaders; j++) {
@@ -99,9 +105,10 @@ void GameManager::initInvaders(int invaderAmountPerRow, int rowsOfInvaders) {
 		{
 			Invader* invader = new Invader(this->invaderSheetPath, j, (int)(MAX_INVADER_TYPES / (float)rowsOfInvaders * j));
 			invader->setPosition(sf::Vector2f((i * invader->rowHeigth) + borderOffset, rowY));
-			invaderList.push_back(invader);
+			this->invaderList.push_back(invader);
 		}
-		rowY += 50;
+		//Space between each invader row
+		rowY += this->invaderList.at(0)->rowHeigth;
 	}
 }
 
@@ -131,10 +138,12 @@ void GameManager::checkCollision()
 				this->player->score += 20;
 				break;
 			}
-			else if (Collision::PixelPerfectTest(this->player->bulletList[i]->getSprite(), this->ufo->ufoSprite))
+			else if (this->isUfoAlive && Collision::PixelPerfectTest(this->player->bulletList[i]->getSprite(), this->ufo->ufoSprite))
 			{
 				//Don't draw the ufo anymore
 				delete this->ufo;
+
+				this->isUfoAlive = false;
 
 				//Ufo explosion sound
 				this->musicPlayer->openMusic(this->explosionSoundPath, false);
@@ -148,6 +157,12 @@ void GameManager::checkCollision()
 	}
 }
 
+void GameManager::spawnUfo(int speed, sf::RenderWindow* gameWindow)
+{
+	this->ufo = new Ufo(speed, this->invaderSheetPath, gameWindow);
+	this->isUfoAlive = true;
+}
+
 
 void GameManager::startGame() {
 }
@@ -159,12 +174,14 @@ void GameManager::render(sf::RenderWindow* gameWindow) {
 		menu->draw(gameWindow);
 		break;
 	case GAME_STATE_RUNNING:
-		for (int i = 0; i < invaderList.size(); i++)
+		for (int i = 0; i < this->invaderList.size(); i++)
 		{
-			invaderList.at(i)->draw(gameWindow);
+			this->invaderList.at(i)->draw(gameWindow);
 		}
 
 		this->player->draw(gameWindow);
+
+		if(this->isUfoAlive)
 		this->ufo->draw(gameWindow);
 		break;
 	}

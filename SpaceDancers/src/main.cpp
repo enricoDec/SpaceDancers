@@ -39,6 +39,4 @@ Add Invader Shooting
 Add Invaders Music Movement
 Add Bonuses
 Implement Pause
-Fix Ufo delete
-Ufo Random spawn
 */
