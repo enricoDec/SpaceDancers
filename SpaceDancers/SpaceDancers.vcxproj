@@ -29,6 +29,7 @@
     <ClCompile Include="src\Menu.cpp" />
     <ClCompile Include="src\MusicPlayer.cpp" />
     <ClCompile Include="src\Player.cpp" />
+    <ClCompile Include="src\Ufo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h" />
@@ -46,10 +47,26 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="src\Ufo.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="bin\Debug\x64\res\background.jpg" />
     <Image Include="bin\Debug\x64\res\InvadersSheet.png" />
+    <Image Include="bin\Debug\x64\res\PlayerSheet.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="bin\Debug\x64\res\fonts\arial.ttf" />
+    <Font Include="bin\Debug\x64\res\fonts\invader.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\x64\openal32.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="bin\Debug\x64\res\music\space_invaders_track_1.wav" />
+    <Media Include="bin\Debug\x64\res\sound_Effects\explosion.wav" />
+    <Media Include="bin\Debug\x64\res\sound_Effects\invaderkilled.wav" />
+    <Media Include="bin\Debug\x64\res\sound_Effects\shoot.wav" />
+    <Media Include="bin\Debug\x64\res\sound_Effects\ufo_highpitch.wav" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

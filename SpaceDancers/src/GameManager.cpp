@@ -28,8 +28,10 @@ GameManager::~GameManager() {
 	}
 	delete menu;
 	delete player;
-	delete spritePath;
-	delete spritePath;
+	delete invaderSheetPath;
+	delete invaderSheetPath;
+	delete musicPlayer;
+	delete ufo;
 }
 
 void GameManager::update(sf::RenderWindow* gameWindow) {
@@ -51,7 +53,10 @@ void GameManager::update(sf::RenderWindow* gameWindow) {
 	if (this->gameState == GAME_STATE_INIT)
 	{
 		initInvaders(invadersPerRow, rowsOfInvaders);
-		this->player = new Player(this->spritePath2, gameWindow);
+		this->player = new Player(this->playerSheetPath, gameWindow);
+
+		//TEMPPPPPPP
+		this->ufo = new Ufo(this->invaderSheetPath, gameWindow);
 
 		this->gameState = GAME_STATE_RUNNING;
 	}
@@ -78,6 +83,9 @@ void GameManager::update(sf::RenderWindow* gameWindow) {
 			fixedDeltaTime -= 1 / 5.0f;
 		}
 
+		//Randomly Spawn an Ufo
+		this->ufo->update(gameWindow, deltaTime);
+
 		//Check for Collisions between Invaders and Bullets
 		checkCollision();
 	}
@@ -89,11 +97,11 @@ void GameManager::initInvaders(int invaderAmountPerRow, int rowsOfInvaders) {
 	for (int j = 0; j < rowsOfInvaders; j++) {
 		for (int i = 0; i < invaderAmountPerRow; i++)
 		{
-			Invader* invader = new Invader(this->spritePath, j, (int)(MAX_INVADER_TYPES / (float)rowsOfInvaders * j));
-			invader->setPosition(sf::Vector2f((i * 50) + borderOffset, rowY));
+			Invader* invader = new Invader(this->invaderSheetPath, j, (int)(MAX_INVADER_TYPES / (float)rowsOfInvaders * j));
+			invader->setPosition(sf::Vector2f((i * invader->rowHeigth) + borderOffset, rowY));
 			invaderList.push_back(invader);
 		}
-		rowY += 40;
+		rowY += 50;
 	}
 }
 
@@ -116,10 +124,24 @@ void GameManager::checkCollision()
 				this->musicPlayer->openMusic(this->deadInvaderSoundPath, false);
 				this->musicPlayer->playMusic();
 
+				//delete bullet from list
 				this->player->bulletList.erase(this->player->bulletList.begin() + i);
 
 				//increase score of player
 				this->player->score += 20;
+				break;
+			}
+			else if (Collision::PixelPerfectTest(this->player->bulletList[i]->getSprite(), this->ufo->ufoSprite))
+			{
+				//Don't draw the ufo anymore
+				delete this->ufo;
+
+				//Ufo explosion sound
+				this->musicPlayer->openMusic(this->explosionSoundPath, false);
+				this->musicPlayer->playMusic();
+
+				//increase score of player
+				this->player->score += 150;
 				break;
 			}
 		}
@@ -143,6 +165,7 @@ void GameManager::render(sf::RenderWindow* gameWindow) {
 		}
 
 		this->player->draw(gameWindow);
+		this->ufo->draw(gameWindow);
 		break;
 	}
 }

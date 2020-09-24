@@ -11,16 +11,21 @@
 #include "Invader.h"
 #include <iostream>
 
-Invader::Invader(const char* spritePath, int rowNumber, int invaderType) :animationState(0), speed(60), rowHeigth(20) {
+Invader::Invader(const char* spritePath, int rowNumber, int invaderType) :animationState(0), speed(60), rowHeigth(60) {
 
 	this->rowNumber = rowNumber;
 	this->invaderType = invaderType;
 	this->invaderTexture = sf::Texture();
-	this->invaderTexture.loadFromFile(spritePath);
+	if (!this->invaderTexture.loadFromFile(spritePath))
+	{
+		// Texture could not be found
+		std::cout << "Invader Texture could not be loaded" << std::endl;
+	}
+	
 	Collision::CreateTextureAndBitmask(invaderTexture, spritePath);
 	this->invaderSprite = sf::Sprite(this->invaderTexture);
 	this->invaderSprite.setTextureRect(sf::IntRect(invaderType * 20, 0, 10, 8));
-	this->invaderSprite.setScale(sf::Vector2f(3.0f, 3.0f));
+	this->invaderSprite.setScale(sf::Vector2f(3.5f, 3.5f));
 	this->invaderSprite.setOrigin(sf::Vector2f(this->invaderSprite.getLocalBounds().width / 2, 
 		this->invaderSprite.getLocalBounds().height / 2));
 }

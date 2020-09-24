@@ -45,6 +45,9 @@
     <ClCompile Include="src\Bullet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Ufo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h">
@@ -74,6 +77,9 @@
     <ClInclude Include="src\Bullet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Ufo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="bin\Debug\x64\res\InvadersSheet.png">
@@ -82,5 +88,32 @@
     <Image Include="bin\Debug\x64\res\background.jpg">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="bin\Debug\x64\res\PlayerSheet.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="bin\Debug\x64\res\fonts\arial.ttf" />
+    <Font Include="bin\Debug\x64\res\fonts\invader.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\x64\openal32.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="bin\Debug\x64\res\sound_Effects\explosion.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="bin\Debug\x64\res\sound_Effects\invaderkilled.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="bin\Debug\x64\res\sound_Effects\shoot.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="bin\Debug\x64\res\sound_Effects\ufo_highpitch.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="bin\Debug\x64\res\music\space_invaders_track_1.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
   </ItemGroup>
 </Project>

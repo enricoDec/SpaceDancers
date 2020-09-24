@@ -15,6 +15,8 @@
 class Invader
 {
 public:
+	int rowHeigth;
+
 	Invader(const char* spritePath, int rowNumber, int invaderType);
 	~Invader();
 
@@ -27,7 +29,6 @@ public:
 
 private:
 	int speed;
-	int rowHeigth;
 	int rowNumber;
 	int animationState;
 	int invaderType;
