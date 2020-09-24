@@ -23,6 +23,7 @@ public:
 	sf::Vector2f getPosition();
 	sf::Sprite getSprite();
 
+
 private:
 	sf::Sprite bulletSprite;
 	sf::Texture bulletTexture;

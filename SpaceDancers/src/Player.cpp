@@ -143,21 +143,6 @@ void Player::update(float deltaTime, sf::RenderWindow* gameWindow)
 	this->scoreText.setString(std::to_string(this->score));
 }
 
-std::vector<Bullet*> Player::getBulletList()
-{
-	return this->bulletList;
-}
-
-sf::Sprite Player::getBulletSprite(int index)
-{
-	return this->bulletList.at(index)->getSprite();
-}
-
-void Player::addPoints(int points)
-{
-	this->score += points;
-}
-
 void Player::removeLife()
 {
 	this->lives--;

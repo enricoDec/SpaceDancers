@@ -18,26 +18,25 @@
 class Player
 {
 public:
+	std::vector<Bullet*> bulletList;
+	int score;
+
 	Player(const char* spriteSheetPath, sf::RenderWindow* gameWindow);
 	~Player();
 	void move(float deltaTime, int direction, sf::RenderWindow* gameWindow);
 	void shoot();
 	void draw(sf::RenderWindow* gameWindow);
 	void update(float deltaTime, sf::RenderWindow* gameWindow);
-	std::vector<Bullet*> getBulletList();
-	sf::Sprite getBulletSprite(int index);
-	void addPoints(int points);
 	void removeLife();
 	void addLife();
 
+
 private:
 	int lives;
-	int score;
 	bool exploded;
 	int minPlayerMovementSpeed;
 	sf::Sprite playerSprite;
 	sf::Texture playerTexture;
-	std::vector<Bullet*> bulletList;
 	sf::Clock clock;
 	const char* playerSpritePath;
 	float bulletCoolDown;

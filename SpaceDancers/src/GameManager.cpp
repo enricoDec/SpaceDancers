@@ -10,7 +10,7 @@
 
 #include "GameManager.h"
 
-GameManager::GameManager(sf::RenderWindow* gameWindow):fixedDeltaTime(0.0f), borderOffset(50), 
+GameManager::GameManager(sf::RenderWindow* gameWindow) :fixedDeltaTime(0.0f), borderOffset(50),
 invadersPerRow(12), rowsOfInvaders(3), level(0), topScore(0) {
 	this->gameState = GAME_STATE_MENU;
 
@@ -33,7 +33,7 @@ GameManager::~GameManager() {
 }
 
 void GameManager::update(sf::RenderWindow* gameWindow) {
-	
+
 	float deltaTime = clock.restart().asSeconds();
 	fixedDeltaTime += deltaTime;
 
@@ -58,7 +58,7 @@ void GameManager::update(sf::RenderWindow* gameWindow) {
 
 	//Game Running
 	if (this->gameState == GAME_STATE_RUNNING) {
-		
+
 		//Update Player
 		this->player->update(deltaTime, gameWindow);
 
@@ -103,13 +103,11 @@ void GameManager::initInvaders(int invaderAmountPerRow, int rowsOfInvaders) {
 /// </summary>
 void GameManager::checkCollision()
 {
-	std::vector<Bullet*> bulletList = this->player->getBulletList();
-
-	for (int i = 0; i < bulletList.size(); i++)
+	for (int i = 0; i < this->player->bulletList.size(); i++)
 	{
-		for (int j = 0; j < invaderList.size(); j++)
+		for (int j = 0; j < this->invaderList.size(); j++)
 		{
-			if (Collision::PixelPerfectTest(bulletList[i]->getSprite(), this->invaderList[j]->getSprite()))
+			if (Collision::PixelPerfectTest(this->player->bulletList[i]->getSprite(), this->invaderList[j]->getSprite()))
 			{
 				//delete invader from list
 				this->invaderList.erase(this->invaderList.begin() + j);
@@ -118,10 +116,11 @@ void GameManager::checkCollision()
 				this->musicPlayer->openMusic(this->deadInvaderSoundPath, false);
 				this->musicPlayer->playMusic();
 
-				//bulletList.erase(bulletList.begin() + i);
+				this->player->bulletList.erase(this->player->bulletList.begin() + i);
 
 				//increase score of player
-				this->player->addPoints(20);
+				this->player->score += 20;
+				break;
 			}
 		}
 	}
