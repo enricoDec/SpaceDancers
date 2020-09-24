@@ -12,11 +12,13 @@
 
 GameManager::GameManager(sf::RenderWindow* gameWindow) :fixedDeltaTime(0.0f), borderOffset(50),
 invadersPerRow(12), rowsOfInvaders(3), level(0), topScore(0), isUfoAlive(false), player(nullptr), ufo(nullptr) {
+	this->gameWindow = gameWindow;
+
 	//init game state
 	this->gameState = GAME_STATE_MENU;
 
 	//init menu
-	menu = new Menu(gameWindow->getSize().x, gameWindow->getSize().y);
+	menu = new Menu(this->gameWindow->getSize().x, this->gameWindow->getSize().y);
 	
 	this->musicPlayer = new MusicPlayer();
 
@@ -34,7 +36,7 @@ invadersPerRow(12), rowsOfInvaders(3), level(0), topScore(0), isUfoAlive(false),
 	this->pauseText.setCharacterSize(this->pauseText.getCharacterSize() + 10);
 	this->pauseText.setOrigin(sf::Vector2f(this->pauseText.getGlobalBounds().width / 2,
 		this->pauseText.getGlobalBounds().height / 2));
-	this->pauseText.setPosition(sf::Vector2f(gameWindow->getSize().x / 2, gameWindow->getSize().y / 2));
+	this->pauseText.setPosition(sf::Vector2f(this->gameWindow->getSize().x / 2, this->gameWindow->getSize().y / 2));
 }
 
 GameManager::~GameManager() {
@@ -55,7 +57,7 @@ GameManager::~GameManager() {
 /// GameManager update main entry point of all game object updates
 /// </summary>
 /// <param name="gameWindow"></param>
-void GameManager::update(sf::RenderWindow* gameWindow) {
+void GameManager::update() {
 	// time used to update the game taking into account different render times
 	float deltaTime = clock.restart().asSeconds();
 	fixedDeltaTime += deltaTime;
@@ -64,7 +66,7 @@ void GameManager::update(sf::RenderWindow* gameWindow) {
 	if (this->gameState == GAME_STATE_MENU)
 	{
 		//update menu state and change if usre clicks on play
-		menu->update(gameWindow);
+		menu->update(this->gameWindow);
 		if (menu->startGame == true)
 		{
 			this->gameState = GAME_STATE_INIT;
@@ -76,7 +78,7 @@ void GameManager::update(sf::RenderWindow* gameWindow) {
 	{
 		//Create invaders, player
 		initInvaders(invadersPerRow, rowsOfInvaders);
-		this->player = new Player(&this->pixelFont, this->playerSheetPath, gameWindow);
+		this->player = new Player(&this->pixelFont, this->playerSheetPath, this->gameWindow);
 
 		this->gameState = GAME_STATE_RUNNING;
 	}
@@ -92,14 +94,11 @@ void GameManager::update(sf::RenderWindow* gameWindow) {
 		}
 
 		//Update Player
-		this->player->update(deltaTime, gameWindow);
+		this->player->update(deltaTime, this->gameWindow);
 
-		//Update Invaders
+		//Update Invaders Animation
 		for (int i = 0; i < this->invaderList.size(); i++)
 		{
-			// move entire row at once
-			this->invaderList.at(i)->move(deltaTime, gameWindow, this->invaderList, borderOffset, mostLeftInvader, mostRightInvader);
-
 			// Sprite Animation 2 times a sec
 			if (fixedDeltaTime > 1 / 2.0f)
 			{
@@ -110,15 +109,18 @@ void GameManager::update(sf::RenderWindow* gameWindow) {
 			fixedDeltaTime -= 1 / 5.0f;
 		}
 
+		//Update Invader Position
+		this->invaderList.at(0)->move(deltaTime, this->gameWindow, this->invaderList, borderOffset, mostLeftInvaderIndex, mostRightInvaderIndex);
+
 		//Update Spawn position
 		if (this->isUfoAlive)
-			this->ufo->update(gameWindow, deltaTime);
+			this->ufo->update(this->gameWindow, deltaTime);
 
 		//Spawn an Ufo each 30sec
 		if (ufoSpawnClock.getElapsedTime().asSeconds() > 30.0f)
 		{
 			ufoSpawnClock.restart();
-			spawnUfo(100, gameWindow);
+			spawnUfo(100);
 		}
 
 		//Check for Collisions between Invaders and Bullets
@@ -149,15 +151,15 @@ void GameManager::initInvaders(int invaderAmountPerRow, int rowsOfInvaders) {
 		for (int i = 0; i < invaderAmountPerRow; i++)
 		{
 			Invader* invader = new Invader(this->invaderSheetPath, j, (int)(MAX_INVADER_TYPES / (float)rowsOfInvaders * j));
-			invader->setPosition(sf::Vector2f((i * invader->rowHeigth) + borderOffset, rowY));
+			invader->setPosition(sf::Vector2f((i * invader->rowHeigth) + borderOffset + 20, rowY));
 			this->invaderList.push_back(invader);
 		}
 		//Space between each invader row
 		rowY += this->invaderList.at(0)->rowHeigth;
 	}
 
-	this->mostLeftInvader = 0;
-	this->mostRightInvader = invadersPerRow - 1;
+	this->mostLeftInvaderIndex = 0;
+	this->mostRightInvaderIndex = invadersPerRow - 1;
 }
 
 /// <summary>
@@ -187,8 +189,7 @@ void GameManager::checkCollision()
 				this->player->score += 20;
 
 				//check most left and most right invader in the list
-				
-
+				findMostLeftandRightInvader();
 				break;
 			}
 			else if (this->isUfoAlive && Collision::PixelPerfectTest(this->player->bulletList[i]->bulletSprite, this->ufo->ufoSprite))
@@ -216,12 +217,12 @@ void GameManager::checkCollision()
 /// </summary>
 /// <param name="speed"></param>
 /// <param name="gameWindow"></param>
-void GameManager::spawnUfo(int speed, sf::RenderWindow* gameWindow)
+void GameManager::spawnUfo(int speed)
 {
 	if (this->ufo != nullptr)
 		delete this->ufo;
 
-	this->ufo = new Ufo(speed, this->invaderSheetPath, gameWindow);
+	this->ufo = new Ufo(speed, this->invaderSheetPath, this->gameWindow);
 	this->isUfoAlive = true;
 }
 
@@ -229,13 +230,13 @@ void GameManager::spawnUfo(int speed, sf::RenderWindow* gameWindow)
 /// Draws all Sprites on the screen
 /// </summary>
 /// <param name="gameWindow"></param>
-void GameManager::render(sf::RenderWindow* gameWindow) {
+void GameManager::render() {
 	switch (gameState)
 	{
 
 	//Menu
 	case GAME_STATE_MENU:
-		menu->draw(gameWindow);
+		menu->draw(this->gameWindow);
 		break;
 
 	//Running
@@ -244,20 +245,20 @@ void GameManager::render(sf::RenderWindow* gameWindow) {
 		//draw invaders
 		for (int i = 0; i < this->invaderList.size(); i++)
 		{
-			this->invaderList.at(i)->draw(gameWindow);
+			this->invaderList.at(i)->draw(this->gameWindow);
 		}
 
 		//draw player
-		this->player->draw(gameWindow);
+		this->player->draw(this->gameWindow);
 
 		//draw ufo
 		if (this->isUfoAlive)
-			this->ufo->draw(gameWindow);
+			this->ufo->draw(this->gameWindow);
 		break;
 
 	//Pause Text
 	case GAME_STATE_PAUSE:
-		gameWindow->draw(this->pauseText);
+		this->gameWindow->draw(this->pauseText);
 		break;
 	}
 }
@@ -277,38 +278,45 @@ void GameManager::pauseGame()
 /// the window border all the rows need to shift down
 /// Call only when invader was shot to update most left and right invader in all rows
 /// </summary>
-void GameManager::findMostLeftandRightInvader(std::vector<Invader*> invaderList, sf::RenderWindow* gameWindow)
+void GameManager::findMostLeftandRightInvader()
 {
 	int invadersLeftInRow = 0;
-	float invaderMLXPos = gameWindow->getSize().x;
+	float invaderMLXPos = this->gameWindow->getSize().x;
 	float invaderMRXPos = 0.0f;
 
 	//row number of first invader in the list
 	int rowNumber = invadersPerRow;
 	//int indexOfFirstInvader = 0;
-	for (int i = 0; i < invaderList.size(); i++)
+	for (int i = 0; i < this->invaderList.size(); i++)
 	{
-		//If next invader is in the same row as past one add to invaders left
-		if (invaderList.at(i)->rowNumber == rowNumber)
-			invadersLeftInRow++;
-		//Else means we are in a new row so reset counters
-		else
-		{
-			this->mostLeftInvader = i;
-			rowNumber = invaderList.at(i)->rowNumber;
-		}
-		//If all the invaders are left in the row
-		//it means this row has to have the ML and MR invader
-		if (this->invadersPerRow == invadersLeftInRow)
-		{
-			this->mostLeftInvader = i - invadersLeftInRow + 1;
-			this->mostRightInvader = i;
-			break;
-		}
+		////If next invader is in the same row as past one add to invaders left
+		//if (this->invaderList.at(i)->rowNumber == rowNumber)
+		//	invadersLeftInRow++;
+		////Else means we are in a new row so reset counters
+		//else
+		//{
+		//	this->mostLeftInvaderIndex = i;
+		//	rowNumber = this->invaderList.at(i)->rowNumber;
+		//}
+		////If all the invaders are left in the row
+		////it means this row has to have the ML and MR invader
+		//if (this->invadersPerRow == invadersLeftInRow)
+		//{
+		//	this->mostLeftInvaderIndex = i - invadersPerRow + 1;
+		//	this->mostRightInvaderIndex = i;
+		//	invadersLeftInRow = 0;
+		//	break;
+		//}
 
-		if (invaderList.at(i)->invaderSprite.getPosition().x > mostRightInvader)
-			this->mostRightInvader = i;
-		if (invaderList.at(i)->invaderSprite.getPosition().x < mostLeftInvader)
-			this->mostLeftInvader = i;
+		if (this->invaderList.at(i)->invaderSprite.getPosition().x > invaderMRXPos)
+		{
+			invaderMRXPos = this->invaderList.at(i)->invaderSprite.getPosition().x;
+			this->mostRightInvaderIndex = i;
+		}
+		if (this->invaderList.at(i)->invaderSprite.getPosition().x < invaderMLXPos)
+		{
+			invaderMLXPos = this->invaderList.at(i)->invaderSprite.getPosition().x;
+			this->mostLeftInvaderIndex = i;
+		}
 	}
 }

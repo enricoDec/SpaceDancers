@@ -48,10 +48,10 @@ void Application::startGame() {
                     sf::Vector2f(event.size.width, event.size.height)));
             }
         }
-        this->gameManager->update(this->gameWindow);
+        this->gameManager->update();
 
         this->gameWindow->clear();
-        this->gameManager->render(this->gameWindow);
+        this->gameManager->render();
         this->gameWindow->display();
         InputHandler::clearKeys();
     }

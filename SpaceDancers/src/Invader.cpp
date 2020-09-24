@@ -42,35 +42,34 @@ void Invader::move(float deltaTime, sf::RenderWindow* gameWindow, std::vector<In
 	//std::cout << "(" << this->invaderSprite.getPosition().x << ")" << "(" << this->invaderSprite.getPosition().y << ")" << std::endl;
 	//std::cout << deltaTime << std::endl;
 
-	// TODO: swap offset with this->invaderSprite.getGlobalBounds().width
-	// TODO: fix this shit
-
-	if ((this->invaderSprite.getPosition().x + borderOffset >= gameWindow->getSize().x)
-		|| (this->invaderSprite.getPosition().x - borderOffset <= 0))
+	if ((invaderList.at(mostRightInvaderIndex)->invaderSprite.getPosition().x + borderOffset >= gameWindow->getSize().x)
+		|| (invaderList.at(mostLeftInvaderIndex)->invaderSprite.getPosition().x - borderOffset <= 0))
 	{
 		moveRow(invaderList);
 	}
 
-	// Prevent invaders getting "stuck" between border and permanently falling down
-	float x = this->invaderSprite.getPosition().x + speed * deltaTime;
+	for (int i = 0; i < invaderList.size(); i++)
+	{
+		// Prevent invaders getting "stuck" between border and permanently falling down
+		float x = invaderList.at(i)->invaderSprite.getPosition().x + speed * deltaTime;
 
-	if (x - borderOffset <= 0)
-		this->invaderSprite.setPosition(sf::Vector2f(borderOffset, this->invaderSprite.getPosition().y));
-	else if (x + borderOffset >= gameWindow->getSize().x)
-		this->invaderSprite.setPosition(sf::Vector2f(gameWindow->getSize().x - borderOffset, this->invaderSprite.getPosition().y));
-	else
-		this->invaderSprite.setPosition(sf::Vector2f(x, this->invaderSprite.getPosition().y));
+		if (x - borderOffset <= 0)
+			invaderList.at(i)->invaderSprite.setPosition(sf::Vector2f(borderOffset,
+				invaderList.at(i)->invaderSprite.getPosition().y));
+		else if (x + borderOffset >= gameWindow->getSize().x)
+			invaderList.at(i)->invaderSprite.setPosition(sf::Vector2f(gameWindow->getSize().x - borderOffset,
+				invaderList.at(i)->invaderSprite.getPosition().y));
+		else
+			invaderList.at(i)->invaderSprite.setPosition(sf::Vector2f(x, invaderList.at(i)->invaderSprite.getPosition().y));
+	}
 }
 
 void Invader::moveRow(std::vector<Invader*> invaderList)
 {
-	for (std::size_t i = 0; i < invaderList.size(); ++i) {
-		if (invaderList[i]->rowNumber == this->rowNumber) {
-
-			invaderList[i]->speed = invaderList[i]->speed * -1;
-			invaderList[i]->setPosition(sf::Vector2f(invaderList[i]->invaderSprite.getPosition().x,
-				invaderList[i]->invaderSprite.getPosition().y + this->rowHeigth));
-		}
+	for (int i = 0; i < invaderList.size(); i++) {
+		invaderList.at(i)->speed = invaderList.at(i)->speed * -1;
+		invaderList.at(i)->setPosition(sf::Vector2f(invaderList.at(i)->invaderSprite.getPosition().x,
+			invaderList.at(i)->invaderSprite.getPosition().y + this->rowHeigth));
 	}
 }
 

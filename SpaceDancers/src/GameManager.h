@@ -32,8 +32,8 @@ public:
 	GameManager(sf::RenderWindow* gameWindow);
 	~GameManager();
 
-	void update(sf::RenderWindow* gameWindow);
-	void render(sf::RenderWindow* gameWindow);
+	void update();
+	void render();
 	void pauseGame();
 
 private:
@@ -59,11 +59,12 @@ private:
 	sf::Clock ufoSpawnClock;
 	sf::Text pauseText;
 	sf::Font pixelFont;
-	int mostLeftInvader;
-	int mostRightInvader;
+	int mostLeftInvaderIndex;
+	int mostRightInvaderIndex;
+	sf::RenderWindow* gameWindow;
 
 	void initInvaders(int invaderAmount, int rowsOfInvaders);
 	void checkCollision();
-	void spawnUfo(int speed, sf::RenderWindow* gameWindow);
-	void findMostLeftandRightInvader(std::vector<Invader*> invaderList, sf::RenderWindow* gameWindow);
+	void spawnUfo(int speed);
+	void findMostLeftandRightInvader();
 };
