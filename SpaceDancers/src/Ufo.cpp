@@ -1,3 +1,12 @@
+/////////////////////////////////////
+/// 
+/// Source File: Ufo.cpp
+/// 
+/// AUTHOR: Enrico Gamil Toros de Chadarevian
+/// MATRNR: 567011
+/// CREATE DATE: 9/22/2020 2:30:00 AM
+///
+/////////////////////////////////////
 #include "Ufo.h"
 
 Ufo::Ufo(int speed, const char* ufoTexturePath, sf::RenderWindow* gameWindow)
@@ -29,12 +38,22 @@ Ufo::~Ufo()
 	delete musicPlayer;
 }
 
+/// <summary>
+/// Update ufo position
+/// </summary>
+/// <param name="gameWindow"></param>
+/// <param name="deltaTime"></param>
 void Ufo::update(sf::RenderWindow* gameWindow, float deltaTime)
 {
 	this->ufoSprite.setPosition(sf::Vector2f(this->ufoSprite.getPosition().x - speed * deltaTime, 
 		this->ufoSprite.getPosition().y));
 }
 
+/// <summary>
+/// Draw ufo on screen
+/// Call on render
+/// </summary>
+/// <param name="gameWindow"></param>
 void Ufo::draw(sf::RenderWindow* gameWindow)
 {
 	gameWindow->draw(this->ufoSprite);

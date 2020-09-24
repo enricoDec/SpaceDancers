@@ -16,9 +16,6 @@ invadersPerRow(12), rowsOfInvaders(3), level(0), topScore(0), isUfoAlive(false),
 
 	//init game state
 	this->gameState = GAME_STATE_MENU;
-
-	//init menu
-	menu = new Menu(this->gameWindow->getSize().x, this->gameWindow->getSize().y);
 	
 	this->musicPlayer = new MusicPlayer();
 
@@ -29,6 +26,9 @@ invadersPerRow(12), rowsOfInvaders(3), level(0), topScore(0), isUfoAlive(false),
 		//Invader Font could not be loaded / found
 		std::cout << "Font could not be loaded" << std::endl;
 	}
+
+	//init menu
+	menu = new Menu(this->gameWindow->getSize().x, this->gameWindow->getSize().y, &this->pixelFont);
 
 	//Pause Text init
 	this->pauseText.setString("Press Enter to unpause");
@@ -145,7 +145,7 @@ void GameManager::update() {
 /// <param name="rowsOfInvaders"></param>
 void GameManager::initInvaders(int invaderAmountPerRow, int rowsOfInvaders) {
 	//Space between top of Window on first row of invaders
-	int rowY = 50;
+	int rowY = 80;
 
 	for (int j = 0; j < rowsOfInvaders; j++) {
 		for (int i = 0; i < invaderAmountPerRow; i++)

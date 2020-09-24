@@ -28,6 +28,11 @@ bool InputHandler::isKeyPressed(int keyCode)
 		return false;
 }
 
+/// <summary>
+/// Returns true of key is realeased
+/// </summary>
+/// <param name="keyCode"></param>
+/// <returns></returns>
 bool InputHandler::isKeyRealeased(int keyCode)
 {
 	std::vector<int>::iterator position = std::find(realeasedKeyCodesList.begin(), realeasedKeyCodesList.end(), keyCode);
@@ -37,6 +42,11 @@ bool InputHandler::isKeyRealeased(int keyCode)
 		return false;
 }
 
+/// <summary>
+/// Returns true if key is held
+/// </summary>
+/// <param name="keyCode"></param>
+/// <returns></returns>
 bool InputHandler::isKeyHeld(int keyCode)
 {
 	std::vector<int>::iterator position = std::find(holdKeyCodesList.begin(), holdKeyCodesList.end(), keyCode);
@@ -46,6 +56,10 @@ bool InputHandler::isKeyHeld(int keyCode)
 		return false;
 }
 
+/// <summary>
+/// Registers a pressed key
+/// </summary>
+/// <param name="keyCode"></param>
 void InputHandler::registerPress(int keyCode)
 {
 	if (std::find(pressedKeyCodesList.begin(), pressedKeyCodesList.end(), keyCode) == pressedKeyCodesList.end())
@@ -54,6 +68,10 @@ void InputHandler::registerPress(int keyCode)
 		holdKeyCodesList.push_back(keyCode);
 }
 
+/// <summary>
+/// Registers a realeased key
+/// </summary>
+/// <param name="keyCode"></param>
 void InputHandler::registerRelease(int keyCode)
 {
 	if (std::find(realeasedKeyCodesList.begin(), realeasedKeyCodesList.end(), keyCode) == realeasedKeyCodesList.end())
@@ -65,6 +83,10 @@ void InputHandler::registerRelease(int keyCode)
 		holdKeyCodesList.erase(position);
 }
 
+/// <summary>
+/// Clears the internal list of keys
+/// Should be called each frame update
+/// </summary>
 void InputHandler::clearKeys()
 {
 	realeasedKeyCodesList.clear();

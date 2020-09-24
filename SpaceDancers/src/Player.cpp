@@ -22,6 +22,7 @@ exploded(false), minPlayerMovementSpeed(400), bulletCoolDown(0.4f)
 		std::cout << "Player Texture could not be loaded" << std::endl;
 	}
 
+	//Init player Sprite
 	this->playerSprite = sf::Sprite(this->playerTexture);
 	this->playerSprite.setScale(sf::Vector2f(3.0f, 3.0f));
 	this->playerSprite.setTextureRect(sf::IntRect(0, 0, 11, 8));
@@ -29,6 +30,7 @@ exploded(false), minPlayerMovementSpeed(400), bulletCoolDown(0.4f)
 		this->playerSprite.getLocalBounds().height / 2));
 	this->playerSprite.setPosition(sf::Vector2f(gameWindow->getSize().x / 2, gameWindow->getSize().y - 11));
 
+	//clock that handles cooldown between shots
 	clock.restart();
 
 	//Obejct to handle sound
@@ -40,8 +42,6 @@ exploded(false), minPlayerMovementSpeed(400), bulletCoolDown(0.4f)
 
 Player::~Player()
 {
-	delete playerSpritePath;
-
 	if (!bulletList.empty())
 	{
 		for (int i = 0; i < bulletList.size(); i++)
@@ -49,21 +49,34 @@ Player::~Player()
 			delete bulletList.at(i);
 		}
 	}
+	delete this->musicPlayer;
 }
 
+/// <summary>
+/// Move player 
+/// </summary>
+/// <param name="deltaTime"></param>
+/// <param name="direction"></param>
+/// <param name="gameWindow"></param>
 void Player::move(float deltaTime, int direction, sf::RenderWindow* gameWindow)
 {
 	if (!this->exploded)
 	{
-		if (this->playerSprite.getPosition().x + (minPlayerMovementSpeed * direction) * deltaTime < gameWindow->getSize().x - this->playerSprite.getTextureRect().width - 10
-			&& this->playerSprite.getPosition().x + (minPlayerMovementSpeed * direction) * deltaTime > 0 + this->playerSprite.getTextureRect().width + 10)
+		if (this->playerSprite.getPosition().x + (minPlayerMovementSpeed * direction) * deltaTime < 
+			gameWindow->getSize().x - this->playerSprite.getTextureRect().width - 10
+			&& this->playerSprite.getPosition().x + (minPlayerMovementSpeed * direction) * deltaTime > 
+			0 + this->playerSprite.getTextureRect().width + 10)
 		{
-			this->playerSprite.setPosition(sf::Vector2f(this->playerSprite.getPosition().x + (minPlayerMovementSpeed * direction) * deltaTime,
+			this->playerSprite.setPosition(sf::Vector2f(this->playerSprite.getPosition().x + 
+				(minPlayerMovementSpeed * direction) * deltaTime,
 				this->playerSprite.getPosition().y));
 		}
 	}
 }
 
+/// <summary>
+/// Shots a bullet from player position
+/// </summary>
 void Player::shoot()
 {
 	if (!this->exploded)
@@ -78,6 +91,10 @@ void Player::shoot()
 	}
 }
 
+/// <summary>
+/// Draw player and player bullets
+/// </summary>
+/// <param name="gameWindow"></param>
 void Player::draw(sf::RenderWindow* gameWindow)
 {
 	//draw Player
@@ -99,6 +116,11 @@ void Player::draw(sf::RenderWindow* gameWindow)
 	}
 }
 
+/// <summary>
+/// Update bullets and delete it if outside of Window
+/// </summary>
+/// <param name="deltaTime"></param>
+/// <param name="gameWindow"></param>
 void Player::update(float deltaTime, sf::RenderWindow* gameWindow)
 {
 	//update Bullet Position
@@ -137,12 +159,18 @@ void Player::update(float deltaTime, sf::RenderWindow* gameWindow)
 	this->scoreText.setString(std::to_string(this->score));
 }
 
+/// <summary>
+/// Removes one life from a player
+/// </summary>
 void Player::removeLife()
 {
 	this->lives--;
 	this->livesList.erase(this->livesList.begin());
 }
 
+/// <summary>
+/// Changes player sprite when exploded
+/// </summary>
 void Player::spriteAnimation()
 {
 	if (this->exploded)
@@ -151,12 +179,21 @@ void Player::spriteAnimation()
 	}
 }
 
+/// <summary>
+/// Call when player hit
+/// </summary>
 void Player::playerExplode()
 {
 	this->musicPlayer->openMusic(this->deadSoundPath, false);
 	this->musicPlayer->playMusic();
+
+	removeLife();
 }
 
+/// <summary>
+/// Draws player lives and score on screen
+/// </summary>
+/// <param name="gameWindow"></param>
 void Player::playerGui(sf::RenderWindow* gameWindow)
 {
 	//Score Text
@@ -174,6 +211,9 @@ void Player::playerGui(sf::RenderWindow* gameWindow)
 	}
 }
 
+/// <summary>
+/// Add a live to the player
+/// </summary>
 void Player::addLife()
 {
 	this->playerLivesSprite = sf::Sprite(this->playerTexture);

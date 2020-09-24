@@ -25,7 +25,7 @@ public:
 
 private:
 	int speed;
-	const char* ufoSoundPath = "C:\\Users\\Enrico\\Desktop\\SpaceDancers\\SpaceDancers\\bin\\Debug\\x64\\res\\sound_Effects\\ufo.wav";
+	const char* ufoSoundPath = "res\\sound_Effects\\ufo.wav";
 	sf::Texture ufoTexture;
 	MusicPlayer* musicPlayer;
 

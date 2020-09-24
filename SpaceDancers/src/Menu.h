@@ -19,7 +19,7 @@
 class Menu
 {
 public:
-	Menu(float width, float height);
+	Menu(float width, float height, sf::Font* font);
 	~Menu();
 
 	bool startGame;
@@ -32,7 +32,7 @@ public:
 
 private:
 	int selectedItemIndex;
-	sf::Font font;
+	sf::Font* font;
 	sf::Text menuText[MAX_NUMBER_OF_ITEMS];
 	sf::Text helpText;
 	sf::Text controlsText;

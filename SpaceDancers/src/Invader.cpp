@@ -37,17 +37,27 @@ Invader::~Invader() {
 void Invader::shoot() {
 }
 
-void Invader::move(float deltaTime, sf::RenderWindow* gameWindow, std::vector<Invader*> invaderList, int borderOffset, int mostLeftInvaderIndex, int mostRightInvaderIndex) {
-	//std::cout << "(" << gameWindow->getSize().x << ")" << " (" << invaderSprite.getPosition().x << ")" << std::endl;
-	//std::cout << "(" << this->invaderSprite.getPosition().x << ")" << "(" << this->invaderSprite.getPosition().y << ")" << std::endl;
-	//std::cout << deltaTime << std::endl;
+/// <summary>
+/// Moves an invader to the right and left and down if the window border has been reached
+/// Should be called each frame update
+/// </summary>
+/// <param name="deltaTime">time difference since last frame</param>
+/// <param name="gameWindow"></param>
+/// <param name="invaderList">list of all the invaders</param>
+/// <param name="borderOffset">window border offset</param>
+/// <param name="mostLeftInvaderIndex">index of the most left invader in all rows</param>
+/// <param name="mostRightInvaderIndex">index of the most right invader in all rows</param>
+void Invader::move(float deltaTime, sf::RenderWindow* gameWindow, std::vector<Invader*> invaderList, 
+	int borderOffset, int mostLeftInvaderIndex, int mostRightInvaderIndex) {
 
+	//if most right or left invader reached the border of the window move all the rows down
 	if ((invaderList.at(mostRightInvaderIndex)->invaderSprite.getPosition().x + borderOffset >= gameWindow->getSize().x)
 		|| (invaderList.at(mostLeftInvaderIndex)->invaderSprite.getPosition().x - borderOffset <= 0))
 	{
 		moveRow(invaderList);
 	}
 
+	//move all the invaders left or right
 	for (int i = 0; i < invaderList.size(); i++)
 	{
 		// Prevent invaders getting "stuck" between border and permanently falling down
@@ -64,6 +74,10 @@ void Invader::move(float deltaTime, sf::RenderWindow* gameWindow, std::vector<In
 	}
 }
 
+/// <summary>
+/// Moves all invaders one row down
+/// </summary>
+/// <param name="invaderList"></param>
 void Invader::moveRow(std::vector<Invader*> invaderList)
 {
 	for (int i = 0; i < invaderList.size(); i++) {
@@ -73,14 +87,25 @@ void Invader::moveRow(std::vector<Invader*> invaderList)
 	}
 }
 
+/// <summary>
+/// Draws the invaders in the given window
+/// </summary>
+/// <param name="gameWindow"></param>
 void Invader::draw(sf::RenderWindow* gameWindow) {
 	gameWindow->draw(this->invaderSprite);
 }
 
+/// <summary>
+/// Sets the position of the invaders
+/// </summary>
+/// <param name="position"></param>
 void Invader::setPosition(sf::Vector2f position) {
 	this->invaderSprite.setPosition(position);
 }
 
+/// <summary>
+/// Changes the invader sprite to make an animation
+/// </summary>
 void Invader::spriteAnimation() {
 	this->animationState = !this->animationState;
 	this->invaderSprite.setTextureRect(sf::IntRect(10 * animationState + invaderType * 20, 0, 10, 8));
