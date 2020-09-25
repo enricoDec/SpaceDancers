@@ -17,6 +17,7 @@
 #include "Collision.h"
 #include "MusicPlayer.h"
 #include "Ufo.h"
+#include <algorithm>
 
 #define GAME_STATE_MENU		 0
 #define GAME_STATE_INIT		 1
@@ -47,6 +48,7 @@ private:
 	const char* playerSheetPath = "res\\PlayerSheet.png";
 	const char* deadInvaderSoundPath = "res\\sound_Effects\\invaderkilled.wav";
 	const char* explosionSoundPath = "res\\sound_Effects\\explosion.wav";
+	const char* shootSoundPath = "res\\sound_Effects\\shoot.wav";
 	const char* pixelFontPath = "res\\fonts\\invader.ttf";
 	std::vector<Invader*> invaderList;
 	sf::Clock clock;
@@ -62,9 +64,17 @@ private:
 	int mostLeftInvaderIndex;
 	int mostRightInvaderIndex;
 	sf::RenderWindow* gameWindow;
+	sf::Clock invaderClock;
+	std::vector<int> bottomInvaderList;
+	std::vector<Bullet*> invaderBullets;
+	sf::Text gameOverText;
+	sf::Text scoreText;
 
 	void initInvaders(int invaderAmount, int rowsOfInvaders);
 	void checkCollision();
 	void spawnUfo(int speed);
 	void findMostLeftandRightInvader();
+	void findMostBottomInvaders();
+	void invaderShoot();
+	void gameOver();
 };

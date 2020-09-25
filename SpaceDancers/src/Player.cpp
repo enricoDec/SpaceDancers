@@ -13,6 +13,7 @@
 Player::Player(sf::Font* pixelFont, const char* spriteSheetPath, sf::RenderWindow* gameWindow) :lives(3), score(0),
 exploded(false), minPlayerMovementSpeed(400), bulletCoolDown(0.4f)
 {
+	this->gameWindow = gameWindow;
 	this->pixelFont = pixelFont;
 	this->playerSpritePath = spriteSheetPath;
 	this->playerTexture = sf::Texture();
@@ -24,11 +25,12 @@ exploded(false), minPlayerMovementSpeed(400), bulletCoolDown(0.4f)
 
 	//Init player Sprite
 	this->playerSprite = sf::Sprite(this->playerTexture);
-	this->playerSprite.setScale(sf::Vector2f(3.0f, 3.0f));
+	this->playerSprite.setScale(sf::Vector2f(5.0f, 5.0f));
 	this->playerSprite.setTextureRect(sf::IntRect(0, 0, 11, 8));
 	this->playerSprite.setOrigin(sf::Vector2f(this->playerSprite.getLocalBounds().width / 2,
 		this->playerSprite.getLocalBounds().height / 2));
-	this->playerSprite.setPosition(sf::Vector2f(gameWindow->getSize().x / 2, gameWindow->getSize().y - 11));
+	this->playerSprite.setPosition(sf::Vector2f(this->gameWindow->getSize().x / 2,
+		this->gameWindow->getSize().y - this->playerSprite.getGlobalBounds().height / 2));
 
 	//clock that handles cooldown between shots
 	clock.restart();
@@ -37,7 +39,7 @@ exploded(false), minPlayerMovementSpeed(400), bulletCoolDown(0.4f)
 	this->musicPlayer = new MusicPlayer();
 
 	//init player score and lives
-	playerGui(gameWindow);
+	playerGui();
 }
 
 Player::~Player()
@@ -58,16 +60,16 @@ Player::~Player()
 /// <param name="deltaTime"></param>
 /// <param name="direction"></param>
 /// <param name="gameWindow"></param>
-void Player::move(float deltaTime, int direction, sf::RenderWindow* gameWindow)
+void Player::move(float deltaTime, int direction)
 {
 	if (!this->exploded)
 	{
-		if (this->playerSprite.getPosition().x + (minPlayerMovementSpeed * direction) * deltaTime < 
+		if (this->playerSprite.getPosition().x + (minPlayerMovementSpeed * direction) * deltaTime <
 			gameWindow->getSize().x - this->playerSprite.getTextureRect().width - 10
-			&& this->playerSprite.getPosition().x + (minPlayerMovementSpeed * direction) * deltaTime > 
+			&& this->playerSprite.getPosition().x + (minPlayerMovementSpeed * direction) * deltaTime >
 			0 + this->playerSprite.getTextureRect().width + 10)
 		{
-			this->playerSprite.setPosition(sf::Vector2f(this->playerSprite.getPosition().x + 
+			this->playerSprite.setPosition(sf::Vector2f(this->playerSprite.getPosition().x +
 				(minPlayerMovementSpeed * direction) * deltaTime,
 				this->playerSprite.getPosition().y));
 		}
@@ -82,7 +84,7 @@ void Player::shoot()
 	if (!this->exploded)
 	{
 		Bullet* bullet = new Bullet(this->playerSpritePath, this->playerSprite.getPosition().x,
-			this->playerSprite.getPosition().y - this->playerSprite.getTextureRect().height - 11);
+			this->playerSprite.getPosition().y - this->playerSprite.getTextureRect().height - 11, 1, false);
 
 		this->bulletList.push_back(bullet);
 
@@ -95,7 +97,7 @@ void Player::shoot()
 /// Draw player and player bullets
 /// </summary>
 /// <param name="gameWindow"></param>
-void Player::draw(sf::RenderWindow* gameWindow)
+void Player::draw()
 {
 	//draw Player
 	gameWindow->draw(this->playerSprite);
@@ -108,7 +110,7 @@ void Player::draw(sf::RenderWindow* gameWindow)
 
 	//draw player lives and score
 	gameWindow->draw(this->scoreText);
-	
+
 	//gameWindow->draw(playerLivesSprite);
 	for (int i = 0; i < this->livesList.size(); i++)
 	{
@@ -121,7 +123,7 @@ void Player::draw(sf::RenderWindow* gameWindow)
 /// </summary>
 /// <param name="deltaTime"></param>
 /// <param name="gameWindow"></param>
-void Player::update(float deltaTime, sf::RenderWindow* gameWindow)
+void Player::update(float deltaTime)
 {
 	//update Bullet Position
 	for (int i = 0; i < bulletList.size(); i++)
@@ -134,18 +136,17 @@ void Player::update(float deltaTime, sf::RenderWindow* gameWindow)
 		}
 	}
 
-
 	//move right
 	if (InputHandler::isKeyPressed(sf::Keyboard::Right) || InputHandler::isKeyHeld(sf::Keyboard::Right))
-		move(deltaTime, 1, gameWindow);
+		move(deltaTime, 1);
 
 	//move left
 	if (InputHandler::isKeyPressed(sf::Keyboard::Left) || InputHandler::isKeyHeld(sf::Keyboard::Left))
-		move(deltaTime, -1, gameWindow);
+		move(deltaTime, -1);
 
 	//shoot
 	if (InputHandler::isKeyPressed(sf::Keyboard::Space) || InputHandler::isKeyHeld(sf::Keyboard::Space))
-	{	
+	{
 		if (this->clock.getElapsedTime().asSeconds() > this->bulletCoolDown)
 		{
 			this->clock.restart();
@@ -153,7 +154,12 @@ void Player::update(float deltaTime, sf::RenderWindow* gameWindow)
 		}
 	}
 
-	spriteAnimation();
+	//update deathAnimation
+	if (this->deathTime.getElapsedTime().asSeconds() > 1.0f)
+	{
+		this->exploded = false;
+		explosionAnimation();
+	}
 
 	//update score
 	this->scoreText.setString(std::to_string(this->score));
@@ -164,37 +170,47 @@ void Player::update(float deltaTime, sf::RenderWindow* gameWindow)
 /// </summary>
 void Player::removeLife()
 {
-	this->lives--;
-	this->livesList.erase(this->livesList.begin());
+	if (this->lives > 0)
+	{
+		this->lives = this->lives - 1;
+		this->livesList.erase(this->livesList.begin());
+	}
+	else
+		std::cout << "Tried to remove life when no lives left" << std::endl;
 }
 
 /// <summary>
 /// Changes player sprite when exploded
 /// </summary>
-void Player::spriteAnimation()
+void Player::explosionAnimation()
 {
 	if (this->exploded)
-	{
-		this->playerSprite.setTextureRect(sf::IntRect(22, 0, 11, 8));
-	}
+		this->playerSprite.setTextureRect(sf::IntRect(11, 0, 11, 8));
+	else
+		this->playerSprite.setTextureRect(sf::IntRect(0, 0, 11, 8));
 }
 
 /// <summary>
 /// Call when player hit
+/// Plays explosion sound and removes one life from player
 /// </summary>
 void Player::playerExplode()
 {
 	this->musicPlayer->openMusic(this->deadSoundPath, false);
 	this->musicPlayer->playMusic();
+	this->exploded = true;
+
+	this->deathTime.restart();
 
 	removeLife();
+	explosionAnimation();
 }
 
 /// <summary>
 /// Draws player lives and score on screen
 /// </summary>
 /// <param name="gameWindow"></param>
-void Player::playerGui(sf::RenderWindow* gameWindow)
+void Player::playerGui()
 {
 	//Score Text
 	scoreText = sf::Text();
@@ -210,6 +226,7 @@ void Player::playerGui(sf::RenderWindow* gameWindow)
 		addLife();
 	}
 }
+
 
 /// <summary>
 /// Add a live to the player

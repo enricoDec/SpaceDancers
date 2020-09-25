@@ -9,15 +9,15 @@
 /////////////////////////////////////
 
 #include "Bullet.h"
-
 /// <summary>
 /// Bullet shot by a player
 /// </summary>
 /// <param name="bulletTexturePath"></param>
 /// <param name="xPos">starting x position of the bullet</param>
 /// <param name="yPos">starting y position of the bullet</param>
-Bullet::Bullet(const char* bulletTexturePath, int xPos, int yPos):bulletSpeed(500)
+Bullet::Bullet(const char* bulletTexturePath, int xPos, int yPos, int direction, bool isInvaderBullet):bulletSpeed(500)
 {
+	this->direction = direction;
 	//Bullet Texture
 	this->bulletTexture = sf::Texture();
 	Collision::CreateTextureAndBitmask(bulletTexture, bulletTexturePath);
@@ -25,7 +25,11 @@ Bullet::Bullet(const char* bulletTexturePath, int xPos, int yPos):bulletSpeed(50
 	//Bullet Sprite
 	this->bulletSprite = sf::Sprite(this->bulletTexture);
 	this->bulletSprite.setScale(sf::Vector2f(3.0f, 3.0f));
-	this->bulletSprite.setTextureRect(sf::IntRect(44, 0, 11, 8));
+	if (!isInvaderBullet)
+		this->bulletSprite.setTextureRect(sf::IntRect(44, 0, 11, 8));
+	else
+		this->bulletSprite.setTextureRect(sf::IntRect(34, 0, 11, 8));
+
 	this->bulletSprite.setOrigin(sf::Vector2f(bulletSprite.getLocalBounds().width / 2, bulletSprite.getLocalBounds().height / 2));
 	this->bulletSprite.setPosition(sf::Vector2f(xPos, yPos));
 }
@@ -45,7 +49,7 @@ bool Bullet::update(float deltaTime, sf::RenderWindow* gameWindow)
 	if (this->bulletSprite.getPosition().y > 0)
 	{
 		this->bulletSprite.setPosition(sf::Vector2f(this->bulletSprite.getPosition().x,
-			this->bulletSprite.getPosition().y - this->bulletSpeed * deltaTime));
+			this->bulletSprite.getPosition().y - (this->bulletSpeed * deltaTime) * this->direction));
 		return false;
 	}
 	else

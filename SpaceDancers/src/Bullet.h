@@ -17,7 +17,7 @@ class Bullet
 public:
 	sf::Sprite bulletSprite;
 
-	Bullet(const char* bulletTexturePath, int xPos, int yPos);
+	Bullet(const char* bulletTexturePath, int xPos, int yPos, int direction, bool isInvaderBullet);
 	~Bullet();
 
 	bool update(float deltaTime, sf::RenderWindow* gameWindow);
@@ -27,4 +27,5 @@ public:
 private:
 	sf::Texture bulletTexture;
 	int bulletSpeed;
+	int direction;
 };

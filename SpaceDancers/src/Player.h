@@ -20,22 +20,23 @@ class Player
 public:
 	std::vector<Bullet*> bulletList;
 	int score;
+	sf::Sprite playerSprite;
+	bool exploded;
+	int lives;
 
 	Player(sf::Font* pixelFont, const char* spriteSheetPath, sf::RenderWindow* gameWindow);
 	~Player();
-	void move(float deltaTime, int direction, sf::RenderWindow* gameWindow);
+	void move(float deltaTime, int direction);
 	void shoot();
-	void draw(sf::RenderWindow* gameWindow);
-	void update(float deltaTime, sf::RenderWindow* gameWindow);
+	void draw();
+	void update(float deltaTime);
 	void removeLife();
 	void addLife();
-
+	void playerExplode();
+	void explosionAnimation();
 
 private:
-	int lives;
-	bool exploded;
 	int minPlayerMovementSpeed;
-	sf::Sprite playerSprite;
 	sf::Texture playerTexture;
 	sf::Clock clock;
 	const char* playerSpritePath;
@@ -47,8 +48,8 @@ private:
 	sf::Font* pixelFont;
 	sf::Sprite playerLivesSprite;
 	std::vector<sf::Sprite> livesList;
+	sf::Clock deathTime;
+	sf::RenderWindow* gameWindow;
 
-	void spriteAnimation();
-	void playerExplode();
-	void playerGui(sf::RenderWindow* gameWindow);
+	void playerGui();
 };

@@ -32,10 +32,8 @@ int main()
 
 //TODO
 /*
-Fix Invader Position
 Add explosion animation to invaders
-Add Invader Shooting
+Add collision invader and player
 Add Invaders Music Movement
 Add Bonuses Bonus
-Implement Pause
 */

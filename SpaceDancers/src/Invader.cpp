@@ -7,13 +7,10 @@
 /// CREATE DATE: 9/17/2020 6:34:16 PM
 ///
 /////////////////////////////////////
-
 #include "Invader.h"
-#include <iostream>
 
 Invader::Invader(const char* spritePath, int rowNumber, int invaderType) :animationState(0), speed(60),
 rowHeigth(60) {
-
 	this->rowNumber = rowNumber;
 	this->invaderType = invaderType;
 	this->invaderTexture = sf::Texture();
@@ -32,9 +29,6 @@ rowHeigth(60) {
 }
 
 Invader::~Invader() {
-}
-
-void Invader::shoot() {
 }
 
 /// <summary>
@@ -93,6 +87,8 @@ void Invader::moveRow(std::vector<Invader*> invaderList)
 /// <param name="gameWindow"></param>
 void Invader::draw(sf::RenderWindow* gameWindow) {
 	gameWindow->draw(this->invaderSprite);
+
+	 
 }
 
 /// <summary>

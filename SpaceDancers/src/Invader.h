@@ -11,6 +11,8 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Collision.h"
+#include <iostream>
+#include "Bullet.h"
 
 class Invader
 {
@@ -24,7 +26,6 @@ public:
 
 	void move(float deltaTime, sf::RenderWindow* gameWindow, std::vector<Invader*> invaderList, 
 		int borderOffset, int mostLeftInvaderIndex, int mostRightInvaderIndex);
-	void shoot();
 	void draw(sf::RenderWindow* gameWindow);
 	void setPosition(sf::Vector2f position);
 	void spriteAnimation();
