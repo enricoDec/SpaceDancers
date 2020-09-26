@@ -34,7 +34,7 @@ GameOver::GameOver(sf::RenderWindow* gameWindow, int score): restart(false)
 	helpText.setString(std::string("Press Enter to Play again"));
 	helpText.setCharacterSize(30);
 	helpText.setOrigin(sf::Vector2f(helpText.getLocalBounds().width / 2, helpText.getLocalBounds().height / 2));
-	helpText.setPosition(sf::Vector2f(gameWindow->getSize().x / 2, gameWindow->getSize().y - helpText.getLocalBounds().height));
+	helpText.setPosition(sf::Vector2f(gameWindow->getSize().x / 2, gameWindow->getSize().y - helpText.getLocalBounds().height - 20));
 }
 
 GameOver::~GameOver()

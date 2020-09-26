@@ -9,8 +9,9 @@
 /////////////////////////////////////
 #include "Invader.h"
 
-Invader::Invader(const char* spritePath, int rowNumber, int invaderType) :animationState(0), speed(60),
+Invader::Invader(const char* spritePath, int rowNumber, int invaderType, int speed): animationState(0),
 rowHeigth(60) {
+	this->speed = speed;
 	this->rowNumber = rowNumber;
 	this->invaderType = invaderType;
 	this->invaderTexture = sf::Texture();

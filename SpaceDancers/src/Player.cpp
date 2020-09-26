@@ -216,7 +216,6 @@ void Player::playerGui()
 	scoreText = sf::Text();
 	scoreText.setString(std::to_string(this->score));
 	scoreText.setFont(*this->pixelFont);
-	scoreText.setOrigin(sf::Vector2f(scoreText.getPosition().x, scoreText.getPosition().y));
 	scoreText.setPosition(sf::Vector2f(gameWindow->getSize().x - scoreText.getGlobalBounds().width - 160,
 		0 + scoreText.getGlobalBounds().height));
 

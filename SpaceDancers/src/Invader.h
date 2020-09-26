@@ -21,7 +21,7 @@ public:
 	int rowNumber;
 	sf::Sprite invaderSprite;
 
-	Invader(const char* spritePath, int rowNumber, int invaderType);
+	Invader(const char* spritePath, int rowNumber, int invaderType, int speed);
 	~Invader();
 
 	void move(float deltaTime, sf::RenderWindow* gameWindow, std::vector<Invader*> invaderList, 

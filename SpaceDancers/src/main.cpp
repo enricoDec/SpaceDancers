@@ -33,7 +33,6 @@ int main()
 //TODO
 /*
 Add explosion animation to invaders
-Add next level
 Add Invaders Music Movement
 Add Bonuses Bonus
 Add dificulty ?

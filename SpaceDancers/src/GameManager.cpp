@@ -11,7 +11,8 @@
 #include "GameManager.h"
 
 GameManager::GameManager(sf::RenderWindow* gameWindow) :fixedDeltaTime(0.0f), borderOffset(50),
-invadersPerRow(12), rowsOfInvaders(4), level(0), player(nullptr), invaderShootingFrequency(0.5f), pauseTime(0.0f){
+invadersPerRow(12), rowsOfInvaders(1), level(0), player(nullptr), invaderShootingFrequency(1.0f), pauseTime(0.0f), invaderInitialSpeed(60)
+{
 	this->gameWindow = gameWindow;
 
 	//init game state
@@ -32,13 +33,23 @@ invadersPerRow(12), rowsOfInvaders(4), level(0), player(nullptr), invaderShootin
 	//init menu
 	menu = new Menu(this->gameWindow->getSize().x, this->gameWindow->getSize().y, &this->pixelFont);
 
-	//Pause Text init
-	this->pauseText.setString("Press Enter to unpause");
+	//Pause text init
+	this->pauseText = sf::Text();
 	this->pauseText.setFont(this->pixelFont);
+	this->pauseText.setString("Press Enter to unpause");
 	this->pauseText.setCharacterSize(this->pauseText.getCharacterSize() + 10);
-	this->pauseText.setOrigin(sf::Vector2f(this->pauseText.getGlobalBounds().width / 2,
-		this->pauseText.getGlobalBounds().height / 2));
+	this->pauseText.setOrigin(sf::Vector2f(this->pauseText.getLocalBounds().width / 2,
+		this->pauseText.getLocalBounds().height / 2));
 	this->pauseText.setPosition(sf::Vector2f(this->gameWindow->getSize().x / 2, this->gameWindow->getSize().y / 2));
+	
+	//level text init
+	this->levelText = sf::Text();
+	this->levelText.setFont(this->pixelFont);
+	this->levelText.setString(std::string("Level " + std::to_string(this->level)));
+	//this->levelText.setCharacterSize(this->levelText.getCharacterSize());
+	this->levelText.setOrigin(sf::Vector2f(this->levelText.getLocalBounds().width / 2,
+		this->levelText.getLocalBounds().height / 2));
+	this->levelText.setPosition(sf::Vector2f(this->gameWindow->getSize().x / 2, levelText.getGlobalBounds().height));
 }
 
 GameManager::~GameManager() {
@@ -97,7 +108,7 @@ void GameManager::update() {
 	if (this->gameState == GAME_STATE_INIT)
 	{
 		//Create invaders, player
-		initInvaders(invadersPerRow, rowsOfInvaders);
+		initInvaders(invadersPerRow, rowsOfInvaders, this->invaderInitialSpeed);
 		this->player = new Player(&this->pixelFont, this->playerSheetPath, this->gameWindow);
 
 		this->gameState = GAME_STATE_RUNNING;
@@ -145,8 +156,8 @@ void GameManager::update() {
 			this->ufoList.at(i)->update(this->gameWindow, deltaTime);
 		}
 
-		//Spawn an Ufo each 30sec
-		if ((this->ufoSpawnClock.getElapsedTime().asSeconds() - pauseTime) > 2.0f)
+		//Spawn an Ufo each 20sec
+		if ((this->ufoSpawnClock.getElapsedTime().asSeconds() - pauseTime) > 20.0f)
 		{
 			pauseTime = 0.0f;
 			this->ufoSpawnClock.restart();
@@ -156,7 +167,7 @@ void GameManager::update() {
 		//delete ufos out of bounds
 		for (int i = 0; i < this->ufoList.size(); i++)
 		{
-			if (this->ufoList.at(i)->ufoSprite.getPosition().x < 100)
+			if (this->ufoList.at(i)->ufoSprite.getPosition().x < 0)
 			{
 				delete ufoList.at(i);
 				this->ufoList.erase(this->ufoList.begin() + i);
@@ -210,14 +221,14 @@ void GameManager::update() {
 /// </summary>
 /// <param name="invaderAmountPerRow"></param>
 /// <param name="rowsOfInvaders"></param>
-void GameManager::initInvaders(int invaderAmountPerRow, int rowsOfInvaders) {
+void GameManager::initInvaders(int invaderAmountPerRow, int rowsOfInvaders, int speed) {
 	//Space between top of Window on first row of invaders
 	int rowY = 120;
 
 	for (int j = 0; j < rowsOfInvaders; j++) {
 		for (int i = 0; i < invaderAmountPerRow; i++)
 		{
-			Invader* invader = new Invader(this->invaderSheetPath, j, (int)(MAX_INVADER_TYPES / (float)rowsOfInvaders * j));
+			Invader* invader = new Invader(this->invaderSheetPath, j, (int)(MAX_INVADER_TYPES / (float)rowsOfInvaders * j), speed);
 			invader->setPosition(sf::Vector2f((i * invader->rowHeigth) + borderOffset + 20, rowY));
 			this->invaderList.push_back(invader);
 		}
@@ -282,6 +293,13 @@ void GameManager::checkCollision()
 
 				//increase score of player
 				this->player->score += 20;
+
+				//check if all invaders dead
+				if (this->invaderList.empty())
+				{
+					nextLevel();
+					break;
+				}
 
 				//check most left and most right invader in the list
 				findMostLeftandRightInvader();
@@ -361,6 +379,10 @@ void GameManager::render() {
 		{
 			this->invaderBullets.at(i)->draw(this->gameWindow);
 		}
+
+		//draw level count
+		this->gameWindow->draw(this->levelText);
+
 		break;
 
 		//Pause Text
@@ -449,4 +471,48 @@ void GameManager::invaderShoot()
 	//play shooting sound
 	this->invaderMusicPlayer->openMusic(this->laserSoundPath, false);
 	this->invaderMusicPlayer->playMusic();
+}
+
+void GameManager::nextLevel()
+{
+	//make game harder
+	this->level++;
+	this->levelText.setString(std::string("Level " + std::to_string(this->level)));
+	this->invaderShootingFrequency = this->invaderShootingFrequency - 0.1f;
+	this->invaderInitialSpeed = this->invaderInitialSpeed + 10;
+	this->player->playerSprite.setPosition(sf::Vector2f(this->gameWindow->getSize().x / 2,
+		this->gameWindow->getSize().y - this->player->playerSprite.getGlobalBounds().height / 2));
+	this->rowsOfInvaders++;
+
+	//delete all ufos
+	if (!this->ufoList.empty())
+	{
+		for (int i = this->ufoList.size() - 1; i >= 0; i--)
+		{
+			delete this->ufoList.at(i);
+			this->ufoList.erase(this->ufoList.end() - 1);
+		}
+	}
+
+	//delete all invader bullets
+	if (!this->invaderBullets.empty())
+	{
+		for (int i = this->invaderBullets.size() - 1; i >= 0; i--)
+		{
+			delete this->invaderBullets.at(i);
+			this->invaderBullets.erase(this->invaderBullets.end() - 1);
+		}
+	}
+
+	//delete all player bullets
+	if (!this->player->bulletList.empty())
+	{
+		for (int i = this->player->bulletList.size() - 1; i >= 0; i--)
+		{
+			delete this->player->bulletList.at(i);
+			this->player->bulletList.erase(this->player->bulletList.end() - 1);
+		}
+	}
+
+	initInvaders(this->invadersPerRow, this->rowsOfInvaders, this->invaderInitialSpeed);
 }

@@ -41,12 +41,13 @@ public:
 	Player* player;
 
 private:
-	void initInvaders(int invaderAmount, int rowsOfInvaders);
+	void initInvaders(int invaderAmount, int rowsOfInvaders, int speed);
 	void checkCollision();
 	void spawnUfo(int speed);
 	void findMostLeftandRightInvader();
 	void findMostBottomInvaders();
 	void invaderShoot();
+	void nextLevel();
 
 	int level;
 	int borderOffset;
@@ -54,6 +55,7 @@ private:
 	int rowsOfInvaders;
 	int mostLeftInvaderIndex;
 	int mostRightInvaderIndex;
+	int invaderInitialSpeed;
 
 	const char* invaderSheetPath = "res\\InvadersSheet.png";
 	const char* playerSheetPath = "res\\PlayerSheet.png";
@@ -87,4 +89,5 @@ private:
 
 	sf::Font pixelFont;
 	sf::Text pauseText;
+	sf::Text levelText;
 };
