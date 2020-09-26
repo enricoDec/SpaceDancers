@@ -37,44 +37,54 @@ public:
 	void render();
 	void pauseGame();
 
-private:
-	int topScore;
 	int gameState;
-	int level;
-	int borderOffset;
-	int invadersPerRow;
-	int rowsOfInvaders;
-	const char* invaderSheetPath = "res\\InvadersSheet.png";
-	const char* playerSheetPath = "res\\PlayerSheet.png";
-	const char* deadInvaderSoundPath = "res\\sound_Effects\\invaderkilled.wav";
-	const char* explosionSoundPath = "res\\sound_Effects\\explosion.wav";
-	const char* shootSoundPath = "res\\sound_Effects\\shoot.wav";
-	const char* pixelFontPath = "res\\fonts\\invader.ttf";
-	std::vector<Invader*> invaderList;
-	sf::Clock clock;
-	float fixedDeltaTime;
-	Menu* menu;
 	Player* player;
-	MusicPlayer* musicPlayer;
-	Ufo* ufo;
-	bool isUfoAlive;
-	sf::Clock ufoSpawnClock;
-	sf::Text pauseText;
-	sf::Font pixelFont;
-	int mostLeftInvaderIndex;
-	int mostRightInvaderIndex;
-	sf::RenderWindow* gameWindow;
-	sf::Clock invaderClock;
-	std::vector<int> bottomInvaderList;
-	std::vector<Bullet*> invaderBullets;
-	sf::Text gameOverText;
-	sf::Text scoreText;
 
+private:
 	void initInvaders(int invaderAmount, int rowsOfInvaders);
 	void checkCollision();
 	void spawnUfo(int speed);
 	void findMostLeftandRightInvader();
 	void findMostBottomInvaders();
 	void invaderShoot();
-	void gameOver();
+
+	int level;
+	int borderOffset;
+	int invadersPerRow;
+	int rowsOfInvaders;
+	int mostLeftInvaderIndex;
+	int mostRightInvaderIndex;
+
+	const char* invaderSheetPath = "res\\InvadersSheet.png";
+	const char* playerSheetPath = "res\\PlayerSheet.png";
+	const char* deadInvaderSoundPath = "res\\sound_Effects\\invaderkilled.wav";
+	const char* explosionSoundPath = "res\\sound_Effects\\explosion.wav";
+	const char* laserSoundPath = "res\\sound_Effects\\laser.wav";
+	const char* shootSoundPath = "res\\sound_Effects\\shoot.wav";
+	const char* pixelFontPath = "res\\fonts\\invader.ttf";
+
+	float fixedDeltaTime;
+	float invaderShootingFrequency;
+	float pauseTime;
+
+	Menu* menu;
+	MusicPlayer* invaderMusicPlayer;
+	MusicPlayer* playerMusicPlayer;
+	MusicPlayer* ufoMusicPlayer;
+
+
+	sf::Clock ufoSpawnClock;
+	sf::Clock clock;
+	sf::Clock invaderClock;
+	sf::Clock pauseClock;
+
+	sf::RenderWindow* gameWindow;
+
+	std::vector<int> bottomInvaderList;
+	std::vector<Bullet*> invaderBullets;
+	std::vector<Invader*> invaderList;
+	std::vector<Ufo*> ufoList;
+
+	sf::Font pixelFont;
+	sf::Text pauseText;
 };

@@ -33,7 +33,8 @@ int main()
 //TODO
 /*
 Add explosion animation to invaders
-Add collision invader and player
+Add next level
 Add Invaders Music Movement
 Add Bonuses Bonus
+Add dificulty ?
 */

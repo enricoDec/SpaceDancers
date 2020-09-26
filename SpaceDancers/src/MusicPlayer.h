@@ -16,7 +16,7 @@
 class MusicPlayer
 {
 public:
-	MusicPlayer();
+	MusicPlayer(float volume);
 	~MusicPlayer();
 
 	void openMusic(const char* pathToSong, bool loop);

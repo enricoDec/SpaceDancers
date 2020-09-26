@@ -55,7 +55,7 @@ Menu::Menu(float width, float height, sf::Font* font) :selectedItemIndex(0), sta
 	controlsText.setPosition(sf::Vector2f(width / 2, height / 2));
 
 	//Background Music
-	this->musicPlayer = new MusicPlayer();
+	this->musicPlayer = new MusicPlayer(90.0f);
 
 	musicPlayer->openMusic(this->pathToMenuMusic, true);
 	musicPlayer->playMusic();

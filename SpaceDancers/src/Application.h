@@ -12,6 +12,7 @@
 #include <SFML/Graphics.hpp>
 #include "GameManager.h"
 #include "InputHandler.h"
+#include "GameOver.h"
 
 class Application {
 public:
@@ -20,6 +21,11 @@ public:
 	
 	void startGame();
 private:
+
+	void resetGame();
+
 	sf::RenderWindow* gameWindow;
 	GameManager* gameManager;
+	GameOver* gameOver;
+	bool isResetting;
 };

@@ -36,7 +36,7 @@ exploded(false), minPlayerMovementSpeed(400), bulletCoolDown(0.4f)
 	clock.restart();
 
 	//Obejct to handle sound
-	this->musicPlayer = new MusicPlayer();
+	this->musicPlayer = new MusicPlayer(20.0f);
 
 	//init player score and lives
 	playerGui();

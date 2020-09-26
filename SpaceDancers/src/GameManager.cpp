@@ -11,13 +11,15 @@
 #include "GameManager.h"
 
 GameManager::GameManager(sf::RenderWindow* gameWindow) :fixedDeltaTime(0.0f), borderOffset(50),
-invadersPerRow(12), rowsOfInvaders(4), level(0), topScore(0), isUfoAlive(false), player(nullptr), ufo(nullptr) {
+invadersPerRow(12), rowsOfInvaders(4), level(0), player(nullptr), invaderShootingFrequency(0.5f), pauseTime(0.0f){
 	this->gameWindow = gameWindow;
 
 	//init game state
 	this->gameState = GAME_STATE_MENU;
 
-	this->musicPlayer = new MusicPlayer();
+	this->invaderMusicPlayer = new MusicPlayer(5.0f);
+	this->playerMusicPlayer = new MusicPlayer(10.0f);
+	this->ufoMusicPlayer = new MusicPlayer(10.0f);
 
 	//init font
 	this->pixelFont = sf::Font();
@@ -42,7 +44,7 @@ invadersPerRow(12), rowsOfInvaders(4), level(0), topScore(0), isUfoAlive(false),
 GameManager::~GameManager() {
 	if (!invaderList.empty())
 	{
-		for (int i = 0; i < this->invaderList.size(); i++)
+		for (int i = this->invaderList.size() - 1; i >= 0; i--)
 		{
 			delete this->invaderList.at(i);
 		}
@@ -50,15 +52,25 @@ GameManager::~GameManager() {
 
 	if (!invaderBullets.empty())
 	{
-		for (int i = 0; i < invaderBullets.size(); i++)
+		for (int i = invaderBullets.size() - 1; i >= 0; i--)
 		{
 			delete this->invaderBullets.at(i);
 		}
 	}
+
+	if (!ufoList.empty())
+	{
+		for (int i = this->ufoList.size() - 1; i >= 0; i--)
+		{
+			delete ufoList.at(i);
+		}
+	}
+
 	delete menu;
 	delete player;
-	delete musicPlayer;
-	delete ufo;
+	delete invaderMusicPlayer;
+	delete playerMusicPlayer;
+	delete ufoMusicPlayer;
 }
 
 /// <summary>
@@ -73,7 +85,7 @@ void GameManager::update() {
 	//Menu
 	if (this->gameState == GAME_STATE_MENU)
 	{
-		//update menu state and change if usre clicks on play
+		//update menu state and change if user clicks on play
 		menu->update(this->gameWindow);
 		if (menu->startGame == true)
 		{
@@ -94,10 +106,17 @@ void GameManager::update() {
 	//Game Running
 	if (this->gameState == GAME_STATE_RUNNING)
 	{
+		//check if invader collide with player
+		if (this->invaderList.at(this->invaderList.size() - 1)->invaderSprite.getPosition().y >
+			(this->player->playerSprite.getPosition().y - this->player->playerSprite.getLocalBounds().height))
+		{
+			this->gameState = GAME_STATE_GAME_OVER;
+		}
 
 		//Pause the game if P is pressed
 		if (InputHandler::isKeyPressed(sf::Keyboard::P))
 		{
+			this->pauseClock.restart();
 			pauseGame();
 		}
 
@@ -120,19 +139,32 @@ void GameManager::update() {
 		//Update Invader Position
 		this->invaderList.at(0)->move(deltaTime, this->gameWindow, this->invaderList, borderOffset, mostLeftInvaderIndex, mostRightInvaderIndex);
 
-		//Update Spawn position
-		if (this->isUfoAlive)
-			this->ufo->update(this->gameWindow, deltaTime);
-
-		//Spawn an Ufo each 30sec
-		if (this->ufoSpawnClock.getElapsedTime().asSeconds() > 30.0f)
+		//Update ufo position
+		for (int i = 0; i < this->ufoList.size(); i++)
 		{
-			this->ufoSpawnClock.restart();
-			spawnUfo(100);
+			this->ufoList.at(i)->update(this->gameWindow, deltaTime);
 		}
 
-		//Make invaders shoot each 10sec
-		if (this->invaderClock.getElapsedTime().asSeconds() > 0.5f && !this->player->exploded)
+		//Spawn an Ufo each 30sec
+		if ((this->ufoSpawnClock.getElapsedTime().asSeconds() - pauseTime) > 2.0f)
+		{
+			pauseTime = 0.0f;
+			this->ufoSpawnClock.restart();
+			spawnUfo(400);
+		}
+
+		//delete ufos out of bounds
+		for (int i = 0; i < this->ufoList.size(); i++)
+		{
+			if (this->ufoList.at(i)->ufoSprite.getPosition().x < 100)
+			{
+				delete ufoList.at(i);
+				this->ufoList.erase(this->ufoList.begin() + i);
+			}
+		}
+
+		//Make invaders shoot
+		if (this->invaderClock.getElapsedTime().asSeconds() > this->invaderShootingFrequency && !this->player->exploded)
 		{
 			this->invaderClock.restart();
 			invaderShoot();
@@ -167,14 +199,9 @@ void GameManager::update() {
 		//Unpause the game if Enter is pressed;
 		if (InputHandler::isKeyPressed(sf::Keyboard::Enter))
 		{
-			ufoSpawnClock.restart();
+			pauseTime = this->pauseClock.getElapsedTime().asSeconds();
 			this->gameState = GAME_STATE_RUNNING;
 		}
-	}
-
-	if (this->gameState == GAME_STATE_GAME_OVER)
-	{
-		gameOver();
 	}
 }
 
@@ -185,7 +212,7 @@ void GameManager::update() {
 /// <param name="rowsOfInvaders"></param>
 void GameManager::initInvaders(int invaderAmountPerRow, int rowsOfInvaders) {
 	//Space between top of Window on first row of invaders
-	int rowY = 80;
+	int rowY = 120;
 
 	for (int j = 0; j < rowsOfInvaders; j++) {
 		for (int i = 0; i < invaderAmountPerRow; i++)
@@ -216,7 +243,7 @@ void GameManager::initInvaders(int invaderAmountPerRow, int rowsOfInvaders) {
 void GameManager::checkCollision()
 {
 	//check collision of invader bullets with player
-	for (size_t i = 0; i < this->invaderBullets.size(); i++)
+	for (int i = 0; i < this->invaderBullets.size(); i++)
 	{
 		if (Collision::PixelPerfectTest(this->player->playerSprite, this->invaderBullets.at(i)->bulletSprite))
 		{
@@ -233,18 +260,21 @@ void GameManager::checkCollision()
 		}
 	}
 
+	//check player bullet collisions
 	for (int i = 0; i < this->player->bulletList.size(); i++)
 	{
+		//check if player bullet hit invader
 		for (int j = 0; j < this->invaderList.size(); j++)
 		{
 			if (Collision::PixelPerfectTest(this->player->bulletList[i]->bulletSprite, this->invaderList[j]->invaderSprite))
 			{
 				//delete invader from list
+				delete this->invaderList.at(j);
 				this->invaderList.erase(this->invaderList.begin() + j);
 
 				//Invader die sound
-				this->musicPlayer->openMusic(this->deadInvaderSoundPath, false);
-				this->musicPlayer->playMusic();
+				this->playerMusicPlayer->openMusic(this->deadInvaderSoundPath, false);
+				this->playerMusicPlayer->playMusic();
 
 				//delete bullet from list
 				delete this->player->bulletList.at(i);
@@ -259,21 +289,26 @@ void GameManager::checkCollision()
 
 				break;
 			}
-			else if (this->isUfoAlive && Collision::PixelPerfectTest(this->player->bulletList[i]->bulletSprite, this->ufo->ufoSprite))
-			{
-				//Don't draw the ufo anymore
-				delete this->ufo;
-				this->ufo = nullptr;
 
-				this->isUfoAlive = false;
+			//check if player bullets hit ufo
+			else {
+				for (int i = 0; j < this->ufoList.size(); j++)
+				{
+					if (Collision::PixelPerfectTest(this->player->bulletList[i]->bulletSprite, this->ufoList.at(j)->ufoSprite))
+					{
+						//delete ufo
+						delete this->ufoList.at(j);
+						this->ufoList.erase(this->ufoList.begin() + j);
 
-				//Ufo explosion sound
-				this->musicPlayer->openMusic(this->explosionSoundPath, false);
-				this->musicPlayer->playMusic();
+						//Ufo explosion sound
+						this->ufoMusicPlayer->openMusic(this->explosionSoundPath, false);
+						this->ufoMusicPlayer->playMusic();
 
-				//increase score of player
-				this->player->score += 150;
-				break;
+						//increase score of player
+						this->player->score += 150;
+						break;
+					}
+				}
 			}
 		}
 	}
@@ -286,11 +321,8 @@ void GameManager::checkCollision()
 /// <param name="gameWindow"></param>
 void GameManager::spawnUfo(int speed)
 {
-	if (this->ufo != nullptr)
-		delete this->ufo;
-
-	this->ufo = new Ufo(speed, this->invaderSheetPath, this->gameWindow);
-	this->isUfoAlive = true;
+	Ufo* ufo = new Ufo(speed, this->invaderSheetPath, this->gameWindow);
+	this->ufoList.push_back(ufo);
 }
 
 /// <summary>
@@ -319,8 +351,10 @@ void GameManager::render() {
 		this->player->draw();
 
 		//draw ufo
-		if (this->isUfoAlive)
-			this->ufo->draw(this->gameWindow);
+		for (int i = 0; i < this->ufoList.size(); i++)
+		{
+			this->ufoList.at(i)->draw(gameWindow);
+		}
 
 		//draw invader bullets
 		for (int i = 0; i < this->invaderBullets.size(); i++)
@@ -332,12 +366,6 @@ void GameManager::render() {
 		//Pause Text
 	case GAME_STATE_PAUSE:
 		this->gameWindow->draw(this->pauseText);
-		break;
-		
-		//GAME OVER
-	case GAME_STATE_GAME_OVER:
-		this->gameWindow->draw(gameOverText);
-		this->gameWindow->draw(scoreText);
 		break;
 	}
 }
@@ -419,26 +447,6 @@ void GameManager::invaderShoot()
 	this->invaderBullets.push_back(invaderBullet);
 
 	//play shooting sound
-	this->musicPlayer->openMusic(shootSoundPath, false);
-	this->musicPlayer->playMusic();
-}
-
-void GameManager::gameOver()
-{
-	gameOverText = sf::Text();
-	gameOverText.setFont(this->pixelFont);
-
-	gameOverText.setString(std::string("Game Over"));
-	gameOverText.setCharacterSize(100);
-	gameOverText.setOrigin(sf::Vector2f(gameOverText.getLocalBounds().width / 2, gameOverText.getLocalBounds().height / 2));
-	gameOverText.setPosition(sf::Vector2f(gameWindow->getSize().x / 2, gameWindow->getSize().y / 2 - 40));
-	
-	scoreText = sf::Text();
-	scoreText.setFont(this->pixelFont);
-
-	scoreText.setString(std::string("Your Score: " + std::to_string(this->player->score)));
-	scoreText.setCharacterSize(40);
-	scoreText.setOrigin(sf::Vector2f(scoreText.getLocalBounds().width / 2, scoreText.getLocalBounds().height / 2));
-	scoreText.setPosition(sf::Vector2f(gameWindow->getSize().x / 2, 
-		gameWindow->getSize().y / 2 + gameOverText.getGlobalBounds().height));
+	this->invaderMusicPlayer->openMusic(this->laserSoundPath, false);
+	this->invaderMusicPlayer->playMusic();
 }

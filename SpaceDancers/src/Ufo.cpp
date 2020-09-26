@@ -28,7 +28,7 @@ Ufo::Ufo(int speed, const char* ufoTexturePath, sf::RenderWindow* gameWindow)
 	this->ufoSprite.setPosition(sf::Vector2f(gameWindow->getSize().x, this->ufoSprite.getGlobalBounds().height + 50));
 
 	//Ufo sound
-	this->musicPlayer = new MusicPlayer();
+	this->musicPlayer = new MusicPlayer(10.0f);
 	musicPlayer->openMusic(ufoSoundPath, false);
 	musicPlayer->playMusic();
 }

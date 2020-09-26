@@ -11,15 +11,17 @@
 #include "Application.h"
 #include <iostream>
 
-Application::Application(unsigned int windowWidth, unsigned int windowHeight, bool isFullScreen) {
+Application::Application(unsigned int windowWidth, unsigned int windowHeight, bool isFullScreen): isResetting(false) {
     this->gameWindow = new sf::RenderWindow(sf::VideoMode(windowWidth, windowHeight), 
         "Space Dancers", isFullScreen ? sf::Style::Fullscreen : sf::Style::Titlebar | sf::Style::Close);
     
-    gameManager = new GameManager(this->gameWindow);
+    this->gameManager = new GameManager(this->gameWindow);
 }
 
 Application::~Application() {
+    delete gameManager;
     delete gameWindow;
+    delete gameOver;
 }
 
 /// <summary>
@@ -48,11 +50,40 @@ void Application::startGame() {
                     sf::Vector2f(event.size.width, event.size.height)));
             }
         }
-        this->gameManager->update();
 
-        this->gameWindow->clear();
-        this->gameManager->render();
+        if (gameManager->gameState == GAME_STATE_GAME_OVER && isResetting == false)
+        {
+            this->isResetting = true;
+            resetGame();
+        }
+
+        if (isResetting == true && gameOver->restart)
+        {
+            this->gameManager = new GameManager(gameWindow);
+            delete this->gameOver;
+            this->isResetting = false;
+        }
+
+        switch (isResetting)
+        {
+        case true:
+            this->gameOver->update();
+            this->gameWindow->clear();
+            this->gameOver->render();
+            break;
+        case false:
+            this->gameManager->update();
+            this->gameWindow->clear();
+            this->gameManager->render();
+            break;
+        }
         this->gameWindow->display();
         InputHandler::clearKeys();
     }
+}
+
+void Application::resetGame()
+{
+    this->gameOver = new GameOver(this->gameWindow, this->gameManager->player->score);
+    delete this->gameManager;
 }
