@@ -15,8 +15,6 @@
 class Bullet
 {
 public:
-	sf::Sprite bulletSprite;
-
 	Bullet(const char* bulletTexturePath, int xPos, int yPos, int direction, bool isInvaderBullet);
 	~Bullet();
 
@@ -24,8 +22,11 @@ public:
 	void draw(sf::RenderWindow* gameWindow);
 	sf::Vector2f getPosition();
 
+	sf::Sprite bulletSprite;
+
 private:
 	sf::Texture bulletTexture;
+
 	int bulletSpeed;
 	int direction;
 };

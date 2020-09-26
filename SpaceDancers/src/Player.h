@@ -18,12 +18,6 @@
 class Player
 {
 public:
-	std::vector<Bullet*> bulletList;
-	int score;
-	sf::Sprite playerSprite;
-	bool exploded;
-	int lives;
-
 	Player(sf::Font* pixelFont, const char* spriteSheetPath, sf::RenderWindow* gameWindow);
 	~Player();
 	void move(float deltaTime, int direction);
@@ -35,21 +29,31 @@ public:
 	void playerExplode();
 	void explosionAnimation();
 
+	std::vector<Bullet*> bulletList;
+	sf::Sprite playerSprite;
+	int score;
+	int lives;
+	bool exploded;
+
 private:
+	void playerGui();
+
 	int minPlayerMovementSpeed;
-	sf::Texture playerTexture;
-	sf::Clock clock;
-	const char* playerSpritePath;
 	float bulletCoolDown;
+
 	const char* shootSoundPath = "res\\sound_Effects\\shoot.wav";
 	const char* deadSoundPath = "res\\sound_Effects\\explosion.wav";
+	const char* playerSpritePath;
+
+	std::vector<sf::Sprite> livesList;
+
 	MusicPlayer* musicPlayer;
+	sf::RenderWindow* gameWindow;
+
 	sf::Text scoreText;
 	sf::Font* pixelFont;
 	sf::Sprite playerLivesSprite;
-	std::vector<sf::Sprite> livesList;
+	sf::Texture playerTexture;
 	sf::Clock deathTime;
-	sf::RenderWindow* gameWindow;
-
-	void playerGui();
+	sf::Clock clock;
 };

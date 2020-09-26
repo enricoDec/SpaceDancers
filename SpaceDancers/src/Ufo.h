@@ -15,17 +15,18 @@
 class Ufo
 {
 public:
-	sf::Sprite ufoSprite;
-
 	Ufo(int speed, const char* ufoTexturePath, sf::RenderWindow* gameWindow);
 	~Ufo();
 	
 	void update(sf::RenderWindow* gameWindow, float deltaTime);
 	void draw(sf::RenderWindow* gameWindow);
 
+	sf::Sprite ufoSprite;
+
 private:
 	int speed;
 	const char* ufoSoundPath = "res\\sound_Effects\\ufo.wav";
+
 	sf::Texture ufoTexture;
 	MusicPlayer* musicPlayer;
 

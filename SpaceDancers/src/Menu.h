@@ -22,15 +22,18 @@ public:
 	Menu(float width, float height, sf::Font* font);
 	~Menu();
 
-	bool startGame;
-
 	void draw(sf::RenderWindow* gameWindow);
 	void moveUp();
 	void moveDown();
 	void update(sf::RenderWindow* gameWindow);
-	int getPressedItem() { return selectedItemIndex; }
+	int getPressedItem() { return selectedItemIndex; 
+	}
+
+	bool startGame;
 
 private:
+	void initMenuText(int menuTextIndex, float width, float heigth);
+
 	int selectedItemIndex;
 	sf::Font* font;
 	sf::Text menuText[MAX_NUMBER_OF_ITEMS];
@@ -38,10 +41,10 @@ private:
 	sf::Text controlsText;
 	sf::Texture background;
 	sf::Sprite backgroundSprite;
+
 	bool isInMenu;
 	const char* pathToMenuMusic = "res\\music\\space_invaders_track_1.wav";
 	const char* pathToBackground = "res\\background.jpg";
 	MusicPlayer* musicPlayer;
 
-	void initMenuText(int menuTextIndex, float width, float heigth);
 };

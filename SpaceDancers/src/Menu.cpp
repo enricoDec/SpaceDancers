@@ -119,7 +119,6 @@ void Menu::update(sf::RenderWindow* gameWindow) {
 			switch (getPressedItem())
 			{
 			case 0:
-				std::cout << "Play button has been pressed" << std::endl;
 				startGame = true;
 				this->musicPlayer->stopMusic();
 				break;

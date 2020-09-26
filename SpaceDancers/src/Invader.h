@@ -17,10 +17,6 @@
 class Invader
 {
 public:
-	int rowHeigth;
-	int rowNumber;
-	sf::Sprite invaderSprite;
-
 	Invader(const char* spritePath, int rowNumber, int invaderType, int speed);
 	~Invader();
 
@@ -30,12 +26,17 @@ public:
 	void setPosition(sf::Vector2f position);
 	void spriteAnimation();
 
+	int rowHeigth;
+	int rowNumber;
+	sf::Sprite invaderSprite;
+
 private:
+	void moveRow(std::vector<Invader*> invaderList);
+
 	int speed;
 	int invadersPerRow;
 	int animationState;
 	int invaderType;
-	sf::Texture invaderTexture;
 
-	void moveRow(std::vector<Invader*> invaderList);
+	sf::Texture invaderTexture;
 };
