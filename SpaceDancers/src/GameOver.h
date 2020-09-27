@@ -34,4 +34,6 @@ private:
 	const char* pixelFontPath = "res\\fonts\\invader.ttf";
 
 	sf::RenderWindow* gameWindow;
+
+	void initText(sf::Text* text, std::string string, unsigned int size, bool setOriginToCenter, bool setPositionToCenter);
 };

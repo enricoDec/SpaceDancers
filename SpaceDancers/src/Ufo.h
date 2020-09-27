@@ -29,5 +29,4 @@ private:
 
 	sf::Texture ufoTexture;
 	MusicPlayer* musicPlayer;
-
 };

@@ -48,6 +48,8 @@ private:
 	void findMostBottomInvaders();
 	void invaderShoot();
 	void nextLevel();
+	void initText(sf::Text* text, std::string string, unsigned int size, bool setOriginToCenter, bool setPositionToCenter);
+	void initEdge();
 
 	int level;
 	int borderOffset;
@@ -56,6 +58,7 @@ private:
 	int mostLeftInvaderIndex;
 	int mostRightInvaderIndex;
 	int invaderInitialSpeed;
+	int invaderYStart;
 
 	const char* invaderSheetPath = "res\\InvadersSheet.png";
 	const char* playerSheetPath = "res\\PlayerSheet.png";
@@ -90,4 +93,5 @@ private:
 	sf::Font pixelFont;
 	sf::Text pauseText;
 	sf::Text levelText;
+	sf::RectangleShape border;
 };

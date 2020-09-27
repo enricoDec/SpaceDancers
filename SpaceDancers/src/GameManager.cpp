@@ -11,9 +11,25 @@
 #include "GameManager.h"
 
 GameManager::GameManager(sf::RenderWindow* gameWindow) :fixedDeltaTime(0.0f), borderOffset(50),
-invadersPerRow(12), rowsOfInvaders(1), level(0), player(nullptr), invaderShootingFrequency(1.0f), pauseTime(0.0f), invaderInitialSpeed(60)
+invadersPerRow(12), rowsOfInvaders(1), level(0), player(nullptr), invaderShootingFrequency(1.0f), pauseTime(0.0f), 
+invaderInitialSpeed(60), invaderYStart(120)
 {
 	this->gameWindow = gameWindow;
+
+	//Game is designed for 1200x and 800y window size if bigger draw a border
+	if (this->gameWindow->getSize().x > 1200 || this->gameWindow->getSize().y > 800)
+	{
+		initEdge();
+	}
+
+	if (this->gameWindow->getSize().x > 1200)
+	{
+		this->borderOffset = (this->gameWindow->getSize().x - 1200) / 2 + 25;
+	}
+	if (this->gameWindow->getSize().y > 800)
+	{
+		this->invaderYStart = ((this->gameWindow->getSize().y - 800) / 2 + 25);
+	}
 
 	//init game state
 	this->gameState = GAME_STATE_MENU;
@@ -31,24 +47,13 @@ invadersPerRow(12), rowsOfInvaders(1), level(0), player(nullptr), invaderShootin
 	}
 
 	//init menu
-	menu = new Menu(this->gameWindow->getSize().x, this->gameWindow->getSize().y, &this->pixelFont);
+	menu = new Menu(this->gameWindow, &this->pixelFont);
 
 	//Pause text init
-	this->pauseText = sf::Text();
-	this->pauseText.setFont(this->pixelFont);
-	this->pauseText.setString("Press Enter to unpause");
-	this->pauseText.setCharacterSize(this->pauseText.getCharacterSize() + 10);
-	this->pauseText.setOrigin(sf::Vector2f(this->pauseText.getLocalBounds().width / 2,
-		this->pauseText.getLocalBounds().height / 2));
-	this->pauseText.setPosition(sf::Vector2f(this->gameWindow->getSize().x / 2, this->gameWindow->getSize().y / 2));
+	initText(&this->pauseText, "Press Enter to unpause", 40, true, true);
 	
 	//level text init
-	this->levelText = sf::Text();
-	this->levelText.setFont(this->pixelFont);
-	this->levelText.setString(std::string("Level " + std::to_string(this->level)));
-	//this->levelText.setCharacterSize(this->levelText.getCharacterSize());
-	this->levelText.setOrigin(sf::Vector2f(this->levelText.getLocalBounds().width / 2,
-		this->levelText.getLocalBounds().height / 2));
+	initText(&this->levelText, std::string("Level " + std::to_string(this->level)), 30, true, false);
 	this->levelText.setPosition(sf::Vector2f(this->gameWindow->getSize().x / 2, levelText.getGlobalBounds().height));
 }
 
@@ -223,17 +228,17 @@ void GameManager::update() {
 /// <param name="rowsOfInvaders"></param>
 void GameManager::initInvaders(int invaderAmountPerRow, int rowsOfInvaders, int speed) {
 	//Space between top of Window on first row of invaders
-	int rowY = 120;
+	int invaderYOffset = this->invaderYStart;
 
 	for (int j = 0; j < rowsOfInvaders; j++) {
 		for (int i = 0; i < invaderAmountPerRow; i++)
 		{
 			Invader* invader = new Invader(this->invaderSheetPath, j, (int)(MAX_INVADER_TYPES / (float)rowsOfInvaders * j), speed);
-			invader->setPosition(sf::Vector2f((i * invader->rowHeigth) + borderOffset + 20, rowY));
+			invader->setPosition(sf::Vector2f((i * invader->rowHeigth) + borderOffset + 20, invaderYOffset));
 			this->invaderList.push_back(invader);
 		}
 		//Space between each invader row
-		rowY += this->invaderList.at(0)->rowHeigth;
+		invaderYOffset += this->invaderList.at(0)->rowHeigth;
 	}
 
 	//init most left and right invader indices
@@ -358,6 +363,8 @@ void GameManager::render() {
 
 		//Running
 	case GAME_STATE_RUNNING:
+		//draw border
+		this->gameWindow->draw(this->border);
 
 		//draw invaders
 		for (int i = 0; i < this->invaderList.size(); i++)
@@ -482,7 +489,10 @@ void GameManager::nextLevel()
 	this->invaderInitialSpeed = this->invaderInitialSpeed + 10;
 	this->player->playerSprite.setPosition(sf::Vector2f(this->gameWindow->getSize().x / 2,
 		this->gameWindow->getSize().y - this->player->playerSprite.getGlobalBounds().height / 2));
-	this->rowsOfInvaders++;
+	if (this->rowsOfInvaders < 6)
+	{
+		this->rowsOfInvaders++;
+	}
 
 	//delete all ufos
 	if (!this->ufoList.empty())
@@ -515,4 +525,32 @@ void GameManager::nextLevel()
 	}
 
 	initInvaders(this->invadersPerRow, this->rowsOfInvaders, this->invaderInitialSpeed);
+}
+
+void GameManager::initText(sf::Text* text, std::string string, unsigned int size, bool setOriginToCenter, bool setPositionToCenter)
+{
+	text->setFont(this->pixelFont);
+	text->setString(string);
+	text->setCharacterSize(size);
+
+	if (setOriginToCenter)
+		text->setOrigin(sf::Vector2f(text->getLocalBounds().width / 2, text->getLocalBounds().height / 2));
+	
+	if (setPositionToCenter)
+		text->setPosition(sf::Vector2f(this->gameWindow->getSize().x / 2, this->gameWindow->getSize().y / 2));
+}
+
+void GameManager::initEdge()
+{
+	//Game is designed for 1200x and 800y window size if bigger draw a border
+	if (this->gameWindow->getSize().x > 1200 || this->gameWindow->getSize().y > 800)
+	{
+		this->border = sf::RectangleShape(sf::Vector2f(1200, 800));
+		this->border.setOrigin(sf::Vector2f(this->border.getLocalBounds().width / 2, this->border.getLocalBounds().height / 2));
+		this->border.setPosition(sf::Vector2f(this->gameWindow->getSize().x / 2, this->gameWindow->getSize().y / 2));
+		this->border.setFillColor(sf::Color::Transparent);
+		this->border.setOutlineThickness(1.0f);
+		this->border.setOutlineColor(sf::Color::White);
+
+	}
 }

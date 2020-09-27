@@ -19,7 +19,7 @@
 class Menu
 {
 public:
-	Menu(float width, float height, sf::Font* font);
+	Menu(sf::RenderWindow* gameWindow, sf::Font* font);
 	~Menu();
 
 	void draw(sf::RenderWindow* gameWindow);
@@ -32,7 +32,7 @@ public:
 	bool startGame;
 
 private:
-	void initMenuText(int menuTextIndex, float width, float heigth);
+	void initText(sf::Text* text, std::string string, unsigned int size, bool setOriginToCenter, bool setPositionToCenter);
 
 	int selectedItemIndex;
 	sf::Font* font;
@@ -41,10 +41,10 @@ private:
 	sf::Text controlsText;
 	sf::Texture background;
 	sf::Sprite backgroundSprite;
+	sf::RenderWindow* gameWindow;
 
 	bool isInMenu;
 	const char* pathToMenuMusic = "res\\music\\space_invaders_track_1.wav";
 	const char* pathToBackground = "res\\background.jpg";
 	MusicPlayer* musicPlayer;
-
 };

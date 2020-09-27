@@ -27,5 +27,6 @@ private:
 	sf::RenderWindow* gameWindow;
 	GameManager* gameManager;
 	GameOver* gameOver;
+
 	bool isResetting;
 };

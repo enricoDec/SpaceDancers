@@ -13,27 +13,19 @@
 
 int main()
 {
-    Application* app = new Application(1200, 800, false);
+    sf::ContextSettings settings;
+    settings.antialiasingLevel = 8;
+
+    Application* app = new Application(1600, 1200, false);
     app->startGame();
 
     delete app;
     return 0;
 }
 
-// GameState
-// Invader
-// VUData
-// Ufo
-// Player
-// Projectile
-// Collidable
-// Explosion
-// Bonus
-
 //TODO
 /*
-Add explosion animation to invaders
 Add Invaders Music Movement
-Add Bonuses Bonus
-Add dificulty ?
+Add Bonuses
+Add dificulty in menu?
 */

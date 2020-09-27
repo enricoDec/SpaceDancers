@@ -1,6 +1,6 @@
 #include "GameOver.h"
 
-GameOver::GameOver(sf::RenderWindow* gameWindow, int score): restart(false)
+GameOver::GameOver(sf::RenderWindow* gameWindow, int score) : restart(false)
 {
 	this->gameWindow = gameWindow;
 
@@ -13,27 +13,14 @@ GameOver::GameOver(sf::RenderWindow* gameWindow, int score): restart(false)
 	}
 
 	//Init game over text
-	gameOverText = sf::Text();
-	gameOverText.setFont(this->pixelFont);
-	scoreText = sf::Text();
-	scoreText.setFont(this->pixelFont);
-	helpText = sf::Text();
-	helpText.setFont(this->pixelFont);
-
-	gameOverText.setString(std::string("Game Over"));
-	gameOverText.setCharacterSize(100);
-	gameOverText.setOrigin(sf::Vector2f(gameOverText.getLocalBounds().width / 2, gameOverText.getLocalBounds().height / 2));
+	initText(&this->gameOverText, "Game Over", 100, true, false);
 	gameOverText.setPosition(sf::Vector2f(gameWindow->getSize().x / 2, gameWindow->getSize().y / 2 - 40));
 
-	scoreText.setString(std::string("Your Score: " + std::to_string(score)));
-	scoreText.setCharacterSize(40);
-	scoreText.setOrigin(sf::Vector2f(scoreText.getLocalBounds().width / 2, scoreText.getLocalBounds().height / 2));
+	initText(&this->scoreText, std::string("Your Score: " + std::to_string(score)), 40, true, false);
 	scoreText.setPosition(sf::Vector2f(gameWindow->getSize().x / 2,
 		gameWindow->getSize().y / 2 + gameOverText.getGlobalBounds().height));
 
-	helpText.setString(std::string("Press Enter to Play again"));
-	helpText.setCharacterSize(30);
-	helpText.setOrigin(sf::Vector2f(helpText.getLocalBounds().width / 2, helpText.getLocalBounds().height / 2));
+	initText(&this->helpText, "Press Enter to play again", 30, true, false);
 	helpText.setPosition(sf::Vector2f(gameWindow->getSize().x / 2, gameWindow->getSize().y - helpText.getLocalBounds().height - 20));
 }
 
@@ -54,4 +41,18 @@ void GameOver::render()
 	this->gameWindow->draw(this->gameOverText);
 	this->gameWindow->draw(this->scoreText);
 	this->gameWindow->draw(this->helpText);
+}
+
+void GameOver::initText(sf::Text* text, std::string string, unsigned int size, bool setOriginToCenter, bool setPositionToCenter)
+{
+
+	text->setFont(this->pixelFont);
+	text->setString(string);
+	text->setCharacterSize(size);
+
+	if (setOriginToCenter)
+		text->setOrigin(sf::Vector2f(text->getLocalBounds().width / 2, text->getLocalBounds().height / 2));
+
+	if (setPositionToCenter)
+		text->setPosition(sf::Vector2f(this->gameWindow->getSize().x / 2, this->gameWindow->getSize().y / 2));
 }
