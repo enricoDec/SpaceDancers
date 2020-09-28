@@ -16,7 +16,7 @@ int main()
     sf::ContextSettings settings;
     settings.antialiasingLevel = 8;
 
-    Application* app = new Application(1600, 1200, false);
+    Application* app = new Application(1200, 800, false);
     app->startGame();
 
     delete app;

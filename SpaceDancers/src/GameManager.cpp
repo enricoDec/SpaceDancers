@@ -11,7 +11,7 @@
 #include "GameManager.h"
 
 GameManager::GameManager(sf::RenderWindow* gameWindow) :fixedDeltaTime(0.0f), borderOffset(50),
-invadersPerRow(12), rowsOfInvaders(1), level(0), player(nullptr), invaderShootingFrequency(1.0f), pauseTime(0.0f), 
+invadersPerRow(12), rowsOfInvaders(1), level(0), player(nullptr), invaderShootingFrequency(0.1f), pauseTime(0.0f), 
 invaderInitialSpeed(60), invaderYStart(120)
 {
 	this->gameWindow = gameWindow;
